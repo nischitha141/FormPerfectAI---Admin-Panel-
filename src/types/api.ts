@@ -147,3 +147,44 @@ export interface PayoutResponse {
 }
 
 export type GetPayoutDataResponse = ApiResponse<PayoutResponse> 
+
+// ---- New subscription-users endpoint types ----
+
+export interface Subscription {
+  _id: string;
+  userId: string;
+  personalizedPlanId: string;
+  status: string;
+  subScription_status: string;
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface SubscriptionUser {
+  _id: string;
+  subscription?: Subscription;     // absent for trial-only users
+  userName: string;
+  email: string;
+  planName: string;
+  subscriptionStatus: string;
+  lastLogin: string;
+  accountStatus: string;
+}
+
+export interface SubscriptionPagination {
+  currentPage: number;
+  totalPages: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface SubscriptionUsersResponseData {
+  users: SubscriptionUser[];
+  pagination: SubscriptionPagination;
+}
+
+export type GetSubscriptionUsersResponse = ApiResponse<SubscriptionUsersResponseData>;
