@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 import { getToken, clearAuthData } from '../auth';
+import { NextRouter } from 'next/router';
 
 export class ApiError extends Error {
   constructor(message: string) {
@@ -12,6 +13,7 @@ export class ApiError extends Error {
 export class ApiClient {
   private static instance: ApiClient;
   private client: AxiosInstance;
+  private router: NextRouter | null = null; // Store the router instance
 
   private constructor() {
     console.log('Initializing API client with base URL:', process.env.NEXT_PUBLIC_API_URL);
@@ -35,10 +37,7 @@ export class ApiClient {
         }
         return config;
       },
-      (error: AxiosError) => {
-        console.error('Request interceptor error:', error);
-        return Promise.reject(error);
-      }
+      (error: AxiosError) => Promise.reject(error)
     );
 
     // Add response interceptor to handle token expiration
@@ -60,7 +59,10 @@ export class ApiClient {
         if (error.response?.status === 401) {
           // Token is invalid or expired
           clearAuthData();
-          window.location.href = '/auth/login';
+          if (this.router) {
+            // Use router.push to avoid page refresh
+            this.router.push('/auth/login');
+          }
         }
         return Promise.reject(error);
       }
