@@ -88,9 +88,22 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
               <tr key={user._id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.planName}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.subscriptionStatus}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.subscriptionStatus.toLowerCase() === 'trial' ? 'bg-amber-100 text-amber-800' :
+                    user.subscriptionStatus.toLowerCase() === 'active' ? 'bg-green-100 text-green-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                    {user.subscriptionStatus}
+                  </span>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.lastLogin}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.accountStatus}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.accountStatus.toLowerCase() === 'active' ? 'bg-green-100 text-green-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                    {user.accountStatus}
+                  </span>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
                   <div ref={menuRef}>
                     <button

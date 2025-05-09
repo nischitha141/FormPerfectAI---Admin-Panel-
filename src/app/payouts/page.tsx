@@ -70,26 +70,26 @@ const PayoutsPage = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardDataCard 
-          title="Total Payout Requests" 
-          value={payoutStats ? (payoutStats.totalPendingPayouts + payoutStats.totalApprovedPayouts + payoutStats.totalRejectedPayouts).toString() : "0"} 
+        <DashboardDataCard
+          title="Total Referral Payouts(This Month)"
+          value={payoutStats ? `$${(payoutStats.totalReferralPayoutThisMonth ?? 0).toFixed(2)}` : "$0.00"}
         />
-        <DashboardDataCard 
-          title="Pending Requests" 
-          value={payoutStats ? payoutStats.totalPendingPayouts.toString() : "0"} 
+        <DashboardDataCard
+          title="Total Pending Payouts"
+          value={payoutStats ? `$${((payoutStats.totalPendingPayouts ?? 0)).toFixed(2)}` : "$0.00"}
         />
-        <DashboardDataCard 
-          title="Approved Requests" 
-          value={payoutStats ? payoutStats.totalApprovedPayouts.toString() : "0"} 
+        <DashboardDataCard
+          title="Total Approved Payouts"
+          value={payoutStats ? `$${(payoutStats.totalApprovedPayouts ?? 0).toFixed(2)}` : "$0.00"}
         />
-        <DashboardDataCard 
-          title="Total Amount" 
-          value={payoutStats ? `$${payoutStats.totalReferralPayoutThisMonth.toFixed(2)}` : "$0.00"} 
+        <DashboardDataCard
+          title="Total Rejected Payouts"
+          value={payoutStats ? `$${(payoutStats.totalReferralPayoutThisMonth ?? 0).toFixed(2)}` : "$0.00"}
         />
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <TableHeader title="Payout Requests Table"/>
+        <TableHeader title="Payout Requests Table" />
         <PayoutRequestsTable requests={transformedPayoutData} />
       </div>
     </div>
