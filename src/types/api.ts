@@ -168,7 +168,7 @@ export interface SubscriptionUser {
   subscription?: Subscription;     // absent for trial-only users
   userName: string;
   email: string;
-  planName: string;
+  planName?: string;
   subscriptionStatus: string;
   lastLogin: string;
   accountStatus: string;
@@ -208,6 +208,30 @@ export interface SubscriptionUsersResponseData {
   pagination: SubscriptionPagination;
 }
 
+export interface ActiveSubscriptionData {
+  _id: string;
+  subscriptionEndDate: string;
+  planName: string;
+}
+
+export interface SubscriptionHistoryEntry {
+  action: string;
+  date: string;
+  oldPlan: string;
+  newPlan: string;
+  status: string;
+  newPlanRank: number;
+  oldPlanRank: number | null;
+}
+
+export interface UserSubscriptionData {
+  activeSubscriptionData?: ActiveSubscriptionData;
+  subscriptionData: SubscriptionHistoryEntry[];
+  pagination: SubscriptionPagination;
+}
+
 export type GetSubscriptionUsersResponse = ApiResponse<SubscriptionUsersResponseData>;
 
 export type GetUserProfileResponse = ApiResponse<UserProfile>;
+
+export type GetUserSubscriptionResponse = ApiResponse<UserSubscriptionData>;

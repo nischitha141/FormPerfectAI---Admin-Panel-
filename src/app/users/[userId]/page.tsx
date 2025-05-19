@@ -5,6 +5,7 @@ import { userService } from "@services/user.service";
 import { Ban, Edit, Mail, User } from "lucide-react";
 
 import UserDetails from "@components/user/UserDetails";
+import UserSubscriptionDetails from "@components/user/UserSubscriptionDetails"
 import { UserProfile } from "../../../types/api";
 import Image from "next/image";
 
@@ -159,11 +160,7 @@ export default function UserPage({
       {/* Tab Content */}
       <div>
         {activeTab === "User Overview" && <UserDetails user={user} />}
-        {activeTab === "Subscription" && (
-          <p className="font-urbanist text-gray-600 text-sm">
-            Activity tab content coming soon...
-          </p>
-        )}
+        {activeTab === "Subscription" && <UserSubscriptionDetails userId={userId}/> }
         {activeTab === "settings" && (
           <p className="font-urbanist text-gray-600 text-sm">
             Settings tab content coming soon...
