@@ -172,6 +172,27 @@ export interface SubscriptionUser {
   subscriptionStatus: string;
   lastLogin: string;
   accountStatus: string;
+  profilePic?: string;
+}
+
+export interface UserProfile {
+  firstName: string;
+  email: string;
+  height: string;
+  weight: string; 
+  preferredUnit: string; 
+  age: number;
+  number: number; 
+  healthCondition: string; 
+  fitnessLevel: string; 
+  gender: string; 
+  fitnessGoal: string; 
+  AccountCreationDate: string; 
+  lastActive: string;
+  status: string; 
+  workoutType: string;
+  commissionEarned: number; 
+  profile: string;
 }
 
 export interface SubscriptionPagination {
@@ -188,3 +209,5 @@ export interface SubscriptionUsersResponseData {
 }
 
 export type GetSubscriptionUsersResponse = ApiResponse<SubscriptionUsersResponseData>;
+
+export type GetUserProfileResponse = ApiResponse<UserProfile>;

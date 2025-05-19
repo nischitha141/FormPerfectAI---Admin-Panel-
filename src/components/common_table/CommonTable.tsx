@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MoreVertical, Eye, Edit, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MoreVertical, Eye, Edit, Pause, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import ConfirmationDialog from '@components/ambassador_program/ConfirmationDialog';
 import EditTierDialog from '@components/ambassador_program/EditTierDialog';
 import type { SubscriptionUser } from '../../types/api';
+import Link from 'next/link';
 
 interface CommonTableProps {
   users: SubscriptionUser[];
@@ -86,21 +87,48 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentUsers.map((user) => (
               <tr key={user._id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.userName}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <Link href={`/users/67d807ef636710e00ea02e8b`} className="flex items-center gap-3">
+                    <div className="flex-shrink-0">
+                      {user.profilePic ? (
+                        <img
+                          src={user.profilePic}
+                          alt={`${user.userName}'s profile`}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-500" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-900 text-sm font-normal font-urbanist">{user.userName}</span>
+                      <span className="text-[#868A92] text-xs font-normal font-urbanist leading-4">{user.email}</span>
+                    </div>
+                  </Link>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.planName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.subscriptionStatus.toLowerCase() === 'trial' ? 'bg-amber-100 text-amber-800' :
-                    user.subscriptionStatus.toLowerCase() === 'active' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      user.subscriptionStatus.toLowerCase() === 'trial'
+                        ? 'bg-amber-100 text-amber-800'
+                        : user.subscriptionStatus.toLowerCase() === 'active'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
                     {user.subscriptionStatus}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.lastLogin}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.accountStatus.toLowerCase() === 'active' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading- JAXB5 font-semibold rounded-full ${
+                      user?.accountStatus?.toLowerCase() === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}
+                  >
                     {user.accountStatus}
                   </span>
                 </td>
@@ -172,7 +200,7 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >
@@ -182,7 +210,7 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >

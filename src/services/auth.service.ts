@@ -32,7 +32,7 @@ export const authService = {
     password: string;
   }): Promise<RegisterResponse> {
     try {
-      const response = await apiClient.post<RegisterResponse>('/auth/register', userData);
+      const response = await apiClient.post<RegisterResponse>('/api/auth/register', userData);
       if (!response.success) {
         throw new ApiError(response.message);
       }
