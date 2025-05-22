@@ -230,8 +230,33 @@ export interface UserSubscriptionData {
   pagination: SubscriptionPagination;
 }
 
+export interface TierData {
+  tierName: string;
+  endDate: string | null;
+}
+
+export interface UserAmbassadorData {
+  inactiveUser: number;
+  totalConversionRate: number;
+  activeReferralUsers: number;
+  totalReferredUser: number;
+  pendingPayout: number;
+  comissionEarnThisMonth: number;
+  tierData: TierData;
+  comissionEarnLifeTime: number;
+  refrerralCode: string;
+}
+
+export interface UserPayoutResponse {
+ sample :string
+}
+
 export type GetSubscriptionUsersResponse = ApiResponse<SubscriptionUsersResponseData>;
 
 export type GetUserProfileResponse = ApiResponse<UserProfile>;
 
 export type GetUserSubscriptionResponse = ApiResponse<UserSubscriptionData>;
+
+export type GetUserAmbassadorResponse = ApiResponse<UserAmbassadorData>;
+
+export type GetUserPayoutResponse = ApiResponse<UserPayoutResponse>;

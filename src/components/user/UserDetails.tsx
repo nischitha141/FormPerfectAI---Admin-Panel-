@@ -1,7 +1,4 @@
 "use client";
-
-import { Pencil } from "lucide-react";
-import { UserProfile } from "../../types/api";
 import { UserProfile } from "../../types/api";
 import SectionHeader from "./SectionHeader";
 import PersonalInfoSection from "./PersonalInfoSection";

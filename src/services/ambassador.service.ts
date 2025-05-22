@@ -1,6 +1,6 @@
 import { apiClient } from '@lib/api/client';
 import { ApiError } from '@lib/api/client';
-import type { GetReferralUsersResponse, GetUserStatusListResponse } from '../types/api';
+import type { GetReferralUsersResponse, GetUserStatusListResponse, GetUserAmbassadorResponse } from '../types/api';
 
 export const ambassadorService = {
   async getReferralUsers(): Promise<GetReferralUsersResponse> {
@@ -38,6 +38,25 @@ export const ambassadorService = {
         throw error;
       }
       throw new ApiError('An unexpected error occurred while fetching referral users');
+    }
+  },
+  async getUserAmbassodorDetails(userId: string, startDate?: string, endDate?: string) {
+    try {
+      
+      const queryParams = new URLSearchParams({ userId });
+      if (startDate) queryParams.append('startDate', startDate);
+      if (endDate) queryParams.append('endDate', endDate);
+
+      const response = await apiClient.get<GetUserAmbassadorResponse>(`/api/admin/ambassadorData?${queryParams.toString()}`);
+      if (!response.success) {
+        throw new ApiError(response.message);
+      }
+      return response;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError('An unexpected error occurred while fetching subscription users');
     }
   }
 }; 

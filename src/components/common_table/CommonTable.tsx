@@ -6,6 +6,7 @@ import ConfirmationDialog from '@components/ambassador_program/ConfirmationDialo
 import EditTierDialog from '@components/ambassador_program/EditTierDialog';
 import type { SubscriptionUser } from '../../types/api';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface CommonTableProps {
   users: SubscriptionUser[];
@@ -91,7 +92,9 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
                   <Link href={`/users/67d807ef636710e00ea02e8b`} className="flex items-center gap-3">
                     <div className="flex-shrink-0">
                       {user.profilePic ? (
-                        <img
+                        <Image
+                          width={24}
+                          height={24}
                           src={user.profilePic}
                           alt={`${user.userName}'s profile`}
                           className="w-6 h-6 rounded-full object-cover"

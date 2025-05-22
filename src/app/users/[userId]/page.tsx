@@ -2,12 +2,14 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { userService } from "@services/user.service";
-import { Ban, Edit, Mail, User } from "lucide-react";
+import {  Mail, User } from "lucide-react";
 
 import UserDetails from "@components/user/UserDetails";
-import UserSubscriptionDetails from "@components/user/UserSubscriptionDetails"
+import UserSubscriptionDetails from "@components/user/UserSubscriptionDetails";
+import UserAmbassadorDetails from "@components/user/UserAmbassadorDetails";
 import { UserProfile } from "../../../types/api";
 import Image from "next/image";
+// import UserPayoutDetails from "@components/user/UserPayoutDetails";
 
 export default function UserPage({
   params,
@@ -145,14 +147,34 @@ export default function UserPage({
             Subscription
           </button>
           <button
-            onClick={() => setActiveTab("settings")}
+            onClick={() => setActiveTab("Ambassador")}
             className={`pb-2 font-urbanist text-sm  transition-colors duration-200 cursor-pointer ${
-              activeTab === "settings"
+              activeTab === "Ambassador"
                 ? "border-b-4 border-blue-600 text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            Settings
+            Ambassador
+          </button>
+          <button
+            onClick={() => setActiveTab("Payouts & Requests")}
+            className={`pb-2 font-urbanist text-sm  transition-colors duration-200 cursor-pointer ${
+              activeTab === "Payouts & Requests"
+                ? "border-b-4 border-blue-600 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Payouts & Requests
+          </button>
+          <button
+            onClick={() => setActiveTab("Activity & Engagement")}
+            className={`pb-2 font-urbanist text-sm  transition-colors duration-200 cursor-pointer ${
+              activeTab === "Activity & Engagement"
+                ? "border-b-4 border-blue-600 text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Activity & Engagement
           </button>
         </nav>
       </div>
@@ -161,9 +183,11 @@ export default function UserPage({
       <div>
         {activeTab === "User Overview" && <UserDetails user={user} />}
         {activeTab === "Subscription" && <UserSubscriptionDetails userId={userId}/> }
-        {activeTab === "settings" && (
+        {activeTab === "Ambassador" && <UserAmbassadorDetails userId={userId}/>}
+        {/* {activeTab === "Payouts & Requests" && <UserPayoutDetails userId={userId}/>} */}
+        {activeTab === "Activity & Engagement" && (
           <p className="font-urbanist text-gray-600 text-sm">
-            Settings tab content coming soon...
+            Activity & Engagement
           </p>
         )}
       </div>

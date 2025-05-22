@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Calendar, Filter } from "lucide-react";
+import { Calendar } from "lucide-react";
 import Image from "next/image";
 
 interface SubscriptionHistoryEntry {
@@ -64,7 +64,7 @@ const SubscriptionHistoryTable: React.FC<SubscriptionHistoryTableProps> = ({
 
   const getStatusBadge = (status: string) => {
     const statusLower = status.toLowerCase();
-    let badgeClasses = "px-2 py-1 text-xs font-medium rounded-full ";
+    const badgeClasses = "px-2 py-1 text-xs font-medium rounded-full ";
 
     switch (statusLower) {
       case "confirmed":

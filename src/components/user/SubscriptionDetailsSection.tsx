@@ -17,13 +17,13 @@ export default function SubscriptionDetailsSection({
     <div className="bg-[#F5F5F5] w-full border-[1px] border-[#E0E0E1] shadow-md rounded-xl p-6 text-black flex flex-col gap-6">
       <InputWithButton
         label="Subscription Plan"
-        value={userSubDetails?.activeSubScriptionData.planName}
+        value={userSubDetails?.activeSubscriptionData?.planName || ""}
         onButtonClick={() => console.log("button clicked")}
       />
       <LabeledInput
         label="Next Billing Date"
         value={formatDate(
-          userSubDetails?.activeSubScriptionData.subscriptionEndDate
+          userSubDetails?.activeSubscriptionData?.subscriptionEndDate || ""
         )}
       />
     </div>

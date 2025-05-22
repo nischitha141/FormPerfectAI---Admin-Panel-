@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { useEffect, useState, use } from "react";
-import { UserSubscriptionData } from "../../../types/api";
+import { useEffect, useState } from "react";
+import { UserSubscriptionData } from "../../types/api";
 import { userService } from "@services/user.service";
 import { notFound } from "next/navigation";
 import SectionHeader from "./SectionHeader";
@@ -11,8 +11,7 @@ import SubscriptionHistoryTable from "./SubscriptionHistoryTable";
 const UserSubscriptionDetails = ({ userId }: { userId: string }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userSubDetails, setUserSubDetails] =
-    useState<UserSubscriptionData | null>(null);
+const [userSubDetails, setUserSubDetails] = useState<UserSubscriptionData | null>(null);
 
   useEffect(() => {
     fetchSubscriptionDetails();
