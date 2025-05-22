@@ -23,7 +23,7 @@ const UserAmbassadorDetails = ({ userId }: { userId: string }) => {
       setError(null);
       setIsLoading(true);
 
-      const response = await ambassadorService.getUserAmbassodorDetails("67d807ef636710e00ea02e8b", startDate, endDate);
+      const response = await ambassadorService.getUserAmbassodorDetails(userId, startDate, endDate);
 
       if (response.success && response.data) {
         setUserAmbassadorDetails(response.data);

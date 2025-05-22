@@ -25,7 +25,7 @@ const [userSubDetails, setUserSubDetails] = useState<UserSubscriptionData | null
       setError(null);
       setIsLoading(true);
 
-      const response = await userService.getUserSubscriptionDetails("67d807ef636710e00ea02e8b", startDate, endDate);
+      const response = await userService.getUserSubscriptionDetails(userId, startDate, endDate);
 
       if (response.success && response.data) {
         setUserSubDetails(response.data);

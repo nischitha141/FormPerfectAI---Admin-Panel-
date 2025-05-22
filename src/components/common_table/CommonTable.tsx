@@ -89,7 +89,7 @@ const CommonTable: React.FC<CommonTableProps> = ({ users }) => {
             {currentUsers.map((user) => (
               <tr key={user._id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <Link href={`/users/67d807ef636710e00ea02e8b`} className="flex items-center gap-3">
+                  <Link href={`/users/${user._id}`} className="flex items-center gap-3">
                     <div className="flex-shrink-0">
                       {user.profilePic ? (
                         <Image
