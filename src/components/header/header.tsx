@@ -39,12 +39,12 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Right Section */}
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 bg-white rounded-lg px-3 py-2">
+        {/* <div className="flex items-center gap-2 bg-white rounded-lg px-3 py-2">
           <Image src="/search.svg" alt="FormPerfect AI" width={20} height={20} />
         </div>
         <div className="flex items-center gap-2 bg-white rounded-lg px-3 py-2">
           <Image src="/notification.svg" alt="FormPerfect AI" width={20} height={20} />
-        </div>
+        </div> */}
         {showPayoutButton && (
           <Link href="/payouts">
             <button className="border border-[#1570EF] text-[#1570EF] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1570EF] hover:text-white transition-colors font-urbanist">

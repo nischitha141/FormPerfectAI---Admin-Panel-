@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { userService } from "@services/user.service";
-import {  Mail, User } from "lucide-react";
+import { User } from "lucide-react";
 
 import UserDetails from "@components/user/UserDetails";
 import UserSubscriptionDetails from "@components/user/UserSubscriptionDetails";
@@ -72,9 +72,9 @@ export default function UserPage({
       <div className="flex flex-col relative">
         {/* Map Placeholder */}
         <div className="w-full h-40 bg-gray-100 rounded-md mb-6 flex items-center justify-center border border-gray-200 shadow-sm">
-          <p className="text-gray-400 text-sm font-urbanist">
+          {/* <p className="text-gray-400 text-sm font-urbanist">
             Map Placeholder (Location Not Available)
-          </p>
+          </p> */}
         </div>
 
         {/* Profile Header and Buttons */}
@@ -110,7 +110,7 @@ export default function UserPage({
             </div>
           </div>
           {/* Buttons on the Left Side */}
-          <div className="flex space-x-2  mt-[15px]">
+          {/* <div className="flex space-x-2  mt-[15px]">
             <button className="flex items-center space-x-1 w-[100px] h-[40px] py-[10px] px-[14px] rounded-sm border-[1px] border-[#E0E0E1] shadow-[0px_1px_2px_0px_#0A0D1408] text-[14px]  text-[#DF1C41] cursor-pointer hover:opacity-90 font-urbanist transition-all">
               <User className="w-5 h-5 font-[600]" />
               <span>Suspend</span>
@@ -119,7 +119,7 @@ export default function UserPage({
               <Mail className="w-4 h-4 mr-2" />
               <span>Send Notification</span>
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export default function UserPage({
           >
             Ambassador
           </button>
-          <button
+          {/* <button
             onClick={() => setActiveTab("Payouts & Requests")}
             className={`pb-2 font-urbanist text-sm  transition-colors duration-200 cursor-pointer ${
               activeTab === "Payouts & Requests"
@@ -175,7 +175,7 @@ export default function UserPage({
             }`}
           >
             Activity & Engagement
-          </button>
+          </button> */}
         </nav>
       </div>
 
@@ -185,11 +185,11 @@ export default function UserPage({
         {activeTab === "Subscription" && <UserSubscriptionDetails userId={userId}/> }
         {activeTab === "Ambassador" && <UserAmbassadorDetails userId={userId}/>}
         {/* {activeTab === "Payouts & Requests" && <UserPayoutDetails userId={userId}/>} */}
-        {activeTab === "Activity & Engagement" && (
+        {/* {activeTab === "Activity & Engagement" && (
           <p className="font-urbanist text-gray-600 text-sm">
             Activity & Engagement
           </p>
-        )}
+        )} */}
       </div>
     </div>
   );

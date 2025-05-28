@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import AuthLayout from '@components/auth/AuthLayout';
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { authService } from '@services/auth.service';
 import { ApiError } from '@lib/api/client';
@@ -52,9 +52,9 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    // Handle Google sign in logic here
-  };
+  // const handleGoogleSignIn = () => {
+  //   // Handle Google sign in logic here
+  // };
 
   return (
     <AuthLayout title="Welcome back">
@@ -65,7 +65,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <button
+        {/* <button
           type="button"
           onClick={handleGoogleSignIn}
           className="w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -77,7 +77,7 @@ const LoginPage = () => {
             height={20}
           />
           Sign in with Google
-        </button>
+        </button> */}
 
         <div className="auth-input-container">
           <label htmlFor="email" className="auth-label">

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Download, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 type TableHeaderProps = {
   title: string;
@@ -13,10 +13,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title }) => {
       {/* Header with Download */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-        <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+        {/* <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
           <Download className="w-4 h-4" />
           <span>Download Reports</span>
-        </button>
+        </button> */}
       </div>
 
       {/* Divider */}
