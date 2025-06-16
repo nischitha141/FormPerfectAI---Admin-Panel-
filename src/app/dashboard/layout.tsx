@@ -10,9 +10,11 @@ export default function DashboardLayout({
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        <Header 
+        <Header
           title="Dashboard"
           description="Welcome to the dashboard"
+          showAddNewWorkout={false}
+
         />
         <main className="flex-1 p-6 bg-white overflow-auto">{children}</main>
       </div>

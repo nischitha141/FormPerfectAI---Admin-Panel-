@@ -1,22 +1,27 @@
+'use client';
 import Sidebar from "@components/sidebar/sidebar";
 import Header from "@components/header/header";
+import { usePathname } from 'next/navigation';
 
-export default function DashboardLayout({
+export default function Workout_MetricsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col">
+
         <Header
-          title="Ambassador Program"
-          description="Track referrals, earnings, and tier progress at a glance"
-          showAddNewWorkout={false}
+          title="Workout Metrics"
+          description="Manage exercises, track workout stats, control workout content, and customize workout details."
+          showPayoutButton={false}
         />
+
         <main className="flex-1 p-6 bg-white overflow-auto">{children}</main>
       </div>
     </div>
   );
-} 
+}
