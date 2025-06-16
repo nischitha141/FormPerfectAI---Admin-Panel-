@@ -19,11 +19,14 @@ export default function UsersLayout({
           <Header
             title="Users"
             description="Track referrals, earnings, and tier progress at a glance"
+            showAddNewWorkout={false}
           />
         ) : (
-            <Header
+          <Header
             isUserProfilePage={true}
-              showPayoutButton={false}
+            showPayoutButton={false}
+            showAddNewWorkout={false}
+
           />)
         }
         <main className="flex-1 p-6 bg-white overflow-auto">{children}</main>

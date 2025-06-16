@@ -13,6 +13,7 @@ export default function PayoutsLayout({
         <Header 
           title="Pending Payout Requests"
           description="Review and manage all pending ambassador payout requests."
+          showAddNewWorkout={false}
           showPayoutButton={false}
         />
         <main className="flex-1 p-6 bg-white overflow-auto">{children}</main>

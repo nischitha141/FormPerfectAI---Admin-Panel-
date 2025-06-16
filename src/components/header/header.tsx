@@ -7,6 +7,7 @@ interface HeaderProps {
   description?: string;
   showPayoutButton?: boolean;
   isUserProfilePage?: boolean;
+  showAddNewWorkout?:boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -14,6 +15,7 @@ const Header: React.FC<HeaderProps> = ({
   description = "Welcome to the dashboard",
   showPayoutButton = true,
   isUserProfilePage = false,
+  showAddNewWorkout= true,
 }) => {
   return (
     <header className="w-full h-16 bg-[#F5F5F5] flex items-center justify-between px-6">
@@ -49,6 +51,13 @@ const Header: React.FC<HeaderProps> = ({
           <Link href="/payouts">
             <button className="border border-[#1570EF] text-[#1570EF] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1570EF] hover:text-white transition-colors font-urbanist">
               Pending Payout Requests
+            </button>
+          </Link>
+        )}
+          {showAddNewWorkout && (
+          <Link href="/">
+            <button className="border border-[#1570EF] text-[#1570EF] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1570EF] hover:text-white transition-colors font-urbanist">
+              Add New WorkOut
             </button>
           </Link>
         )}
