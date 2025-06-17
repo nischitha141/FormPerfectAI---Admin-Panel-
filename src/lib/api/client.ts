@@ -18,7 +18,7 @@ export class ApiClient {
   private constructor() {
     console.log('Initializing API client with base URL:', process.env.NEXT_PUBLIC_API_URL);
     this.client = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://51.20.81.95:3005/',
+      baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://51.20.130.75/',
       timeout: 10000,
     });
 
