@@ -3,7 +3,7 @@ export const API_CONFIG = {
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 seconds
+  timeout: 10000, 
 };
 
 export const getAuthHeaders = (token: string) => ({
