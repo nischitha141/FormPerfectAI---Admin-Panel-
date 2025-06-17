@@ -97,7 +97,7 @@ const filteredRequests = requests.filter((request) => {
       })
     : filteredRequests;
 
-  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedRequests.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentRequests = filteredRequests.slice(startIndex, startIndex + itemsPerPage);
 
