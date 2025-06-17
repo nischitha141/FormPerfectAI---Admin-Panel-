@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import TableHeader from '@components/ambassador_program/TableHeader';
-import CommonTable from '@components/common_table/CommonTable';
-import type { SubscriptionUser } from '../../types/api';
+// import CommonTable from '@components/common_table/CommonTable';
+// import type { SubscriptionUser } from '../../types/api';
 import withAuth from '../../utils/withAuth';
-import { userService } from '@services/user.service';
+// import { userService } from '@services/user.service';
 import WorkoutTable from '@components/ambassador_program/WorkoutTable';
 
 const Workout_Metrics = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('');
   // const [subscriptionUser, setSubsciptionUser] = useState<SubscriptionUser[]>([]);
@@ -78,17 +78,17 @@ const testRequests = [
   //   fetchData();
   // }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-500"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-500"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="flex items-center justify-center h-screen text-red-500">{error}</div>;
+  // }
 
   return (
     <div className="space-y-6 p-4">

@@ -1,7 +1,7 @@
 'use client';
 import Sidebar from "@components/sidebar/sidebar";
 import Header from "@components/header/header";
-import { usePathname } from 'next/navigation';
+
 
 export default function Workout_MetricsLayout({
   children,
