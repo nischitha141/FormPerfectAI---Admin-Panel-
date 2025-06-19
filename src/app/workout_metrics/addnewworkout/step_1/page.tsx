@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import WorkoutVideoUpload from '@components/workout_metrics/WorkoutVideoUpload';
 import { useRouter } from 'next/navigation';
-import {  exerciseFormState } from '@lib/recoil/workoutFormState';
+import { exerciseFormState } from '@lib/recoil/workoutFormState';
 import { useSetRecoilState } from 'recoil';
 interface FormType {
   workoutName: string;
