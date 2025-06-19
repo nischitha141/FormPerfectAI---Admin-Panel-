@@ -92,7 +92,7 @@ const AddNewWorkoutStep2Page = () => {
                   <p className="text-sm font-medium text-gray-700">Banner appearance</p>
                   <p className="text-sm text-gray-400">Change how banners appear to visitors.</p>
                 </div>
-                <MobileWorkout />
+                <MobileWorkout uploadedImageUrl={uploadedImageUrl} />
               </div>
               <div className="border-t border-gray-200" />
 

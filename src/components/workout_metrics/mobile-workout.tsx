@@ -1,11 +1,12 @@
 import React from "react";
 import { cn } from "../../utils/mobile";
-
+import { Timer, Flame } from 'lucide-react';
 interface MobileWorkoutProps {
   className?: string;
+  uploadedImageUrl?:string|null;
 }
 
-export function MobileWorkout({ className }: MobileWorkoutProps) {
+export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps) {
   return (
     <div className={cn("flex items-center justify-center p-8", className)}>
       {/* iPhone Frame */}
@@ -100,73 +101,64 @@ export function MobileWorkout({ className }: MobileWorkoutProps) {
 
                   {/* Video Section */}
                   <div className="relative mx-4 mb-4">
-                    <div className="aspect-video bg-gray-800 rounded-2xl overflow-hidden relative">
+                    <div className=" bg-gray-800 rounded-2xl overflow-hidden relative">
                       {/* Video Content */}
-                      <img
+                      {uploadedImageUrl ?   <img
+                          src={uploadedImageUrl}
+                          alt="Workout Banner"
+                          className="h-1/3 w-full object-cover"
+                        />:<img
                         src="https://cdn.builder.io/api/v1/assets/bd4d945ca4724ec996b5b16cb2962d4c/screenshot-2025-06-18-231307-adee42?format=webp&width=800"
                         alt="Workout demonstration"
                         className="w-full h-full object-cover"
-                      />
+                      /> 
+                      
+                      }
+                      
 
-                      {/* Video Controls Overlay */}
-                      <div className="absolute inset-0 bg-black/20" />
+                     
 
-                      {/* Play Button */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                          <svg
-                            className="w-8 h-8 text-white ml-1"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      </div>
 
-                    
                     </div>
                   </div>
-  {/* Timer Box - Single rectangular container overlaying center-bottom */}
-                      <div className="relative bottom-[35px] width-[185px] left-1/2 transform -translate-x-1/2 ">
-                        <div className="bg-black/80 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-6 borde">
-                          {/* Time Section */}
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 bg-lime-400 rounded-full flex items-center justify-center">
-                              <svg
-                                className="w-2.5 h-2.5 text-black"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
-                              </svg>
-                            </div>
-                            <div className="text-white text-xs">
-                              <span className="font-medium">Time</span>
-                              <br />
-                              <span className="font-semibold">20 min</span>
+                  {/* Timer Box - Single rectangular container overlaying center-bottom */}
+                  <div className="relative bottom-[35px]  flex justify-center ">
+                    <div
+                      className="relative rounded-xl p-[2px] bg-[conic-gradient(_#D0EA59,_transparent_65%,_transparent_50%,_transparent_65%,_#D0EA59)]"
+                    >
+                      <div className="bg-black/80 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-6">
+                        {/* Time Section */}
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 bg-[#D0EA59]  flex items-center justify-center border rounded-lg">
+                            <div className=" text-black">
+                              <Timer className="w-4 h-4" />
+
                             </div>
                           </div>
+                          <div className="text-white text-xs">
+                            <span className="font-medium">Time</span>
+                            <br />
+                            <span className="font-semibold">20 min</span>
+                          </div>
+                        </div>
 
-                          {/* Burn Section */}
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 bg-lime-400 rounded-full flex items-center justify-center">
-                              <svg
-                                className="w-2.5 h-2.5 text-black"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                              </svg>
+                        {/* Burn Section */}
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 bg-[#D0EA59]  flex items-center justify-center border rounded-lg">
+                            <div className=" text-black">
+                              < Flame className="w-4 h-4" />
+
                             </div>
-                            <div className="text-white text-xs">
-                              <span className="font-medium">Burn</span>
-                              <br />
-                              <span className="font-semibold">56 kcal</span>
-                            </div>
+                          </div>
+                          <div className="text-white text-xs">
+                            <span className="font-medium">Burn</span>
+                            <br />
+                            <span className="font-semibold">56 kcal</span>
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
                   {/* Content */}
                   <div className="px-4 space-y-6">
                     {/* Title */}
