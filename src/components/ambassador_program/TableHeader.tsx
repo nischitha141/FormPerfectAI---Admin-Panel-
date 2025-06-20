@@ -10,23 +10,30 @@ type TableHeaderProps = {
   setSearchQuery?: (value: string) => void;
   filterType?: string;
   setFilterType?: (value: string) => void;
+  addFaq?: boolean,
 
 };
 
-const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ title, addFaq = false, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
   return (
     <div className="space-y-4">
       {/* Header with Download */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-        {/* <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+      {title && (
+        <>
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+            {/* <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
           <Download className="w-4 h-4" />
           <span>Download Reports</span>
         </button> */}
-      </div>
+          </div>
 
-      {/* Divider */}
-      <div className="border-t border-gray-200" />
+          {/* Divider */}
+          <div className="border-t border-gray-200" />
+        </>
+      )}
+
+
 
       {/* Filters Section */}
       <div className="flex flex-col md:flex-row gap-4 bg-[#FBFBFD] p-4 rounded-lg">
@@ -44,6 +51,16 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false,
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               ) : null
+            ) : addFaq ? (
+              setSearchQuery ? (
+                <input
+                  type="text"
+                  placeholder="Search by Name, Type..."
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              ) : null
             ) : (
               <input
                 type="text"
@@ -51,6 +68,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false,
                 className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             )}
+
 
           </div>
         </div>
@@ -62,11 +80,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false,
         <div className="flex flex-col md:flex-row gap-4">
           {/* Filter Status Dropdown */}
           <div className="w-full md:w-48">
-            {addNewWorkOut ? (
-              setFilterType?(
-              <select value={filterType}
+            {addNewWorkOut && setFilterType ? (
+              <select
+                value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
                 <option value="">Filter Status</option>
                 <option value="Strength">Strength</option>
                 <option value="Flexibility">Flexibility</option>
@@ -74,10 +93,21 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false,
                 <option value="Muscle_Gain">Muscle Gain</option>
                 <option value="Weight_Loss">Weight Loss</option>
                 <option value="Yoga">Yoga</option>
-
-              </select>):null
+              </select>
+            ) : addFaq && setFilterType ? (
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Filter Status</option>
+                <option value="active">Active</option>
+                <option value="hidden">Hidden</option>
+              </select>
             ) : (
-              <select className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <select
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
                 <option value="">Filter Status</option>
                 <option value="active">Active</option>
                 <option value="suspended">Suspended</option>
@@ -85,10 +115,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addNewWorkOut = false,
               </select>
             )}
 
+
           </div>
 
           {/* Date Range Picker */}
-          {!addNewWorkOut && (
+          {!addNewWorkOut && !addFaq && (
             <div className="w-full md:w-48">
               <input
                 type="text"

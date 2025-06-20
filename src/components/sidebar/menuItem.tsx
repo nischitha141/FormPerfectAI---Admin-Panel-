@@ -15,5 +15,7 @@ export const menuItems: MenuItem[] = [
   { name: 'Users', icon: <Users size={18} />, href: '/users' },
   { name: 'Workout Metrics', icon: <Dumbbell size={18} />, href: '/workout_metrics' },
   { name: 'Settings', icon: <Settings size={18} />, href: '/settings' },
+  { name: 'FAQ Management', icon: <Settings size={18} />, href: '/faq' },
+
 
 ];

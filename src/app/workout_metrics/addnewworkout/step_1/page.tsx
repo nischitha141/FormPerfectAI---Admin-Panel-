@@ -214,58 +214,98 @@ const AddNewWorkoutStep1Page = () => {
             </div>
 
 
-            <div className="flex items-center gap-16">
+            <div className="flex items-center gap-16 relative">
               <label className="w-[150px] text-sm font-urbanist font-medium">Difficulty Level</label>
-              <select
-                name="difficulty"
-                value={form.difficulty}
-                onChange={handleChange}
-                className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">Select</option>
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Advanced</option>
-              </select>
+
+              <div className="relative w-[516px]">
+                <select
+                  name="difficulty"
+                  value={form.difficulty}
+                  onChange={handleChange}
+                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
+                >
+                  <option value="">Select</option>
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+
+                {/* Dropdown icon */}
+                <svg
+                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
+
 
             <hr className="border-t border-gray-200" />
 
-            <div className="flex items-center gap-16">
+            <div className="flex items-center gap-16 relative">
               <label className="w-[150px] text-sm font-urbanist font-medium">Workout Type</label>
-              <select
-                name="type"
-                value={form.type}
-                onChange={handleChange}
-                className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">Select</option>
-                <option>Strength</option>
-                <option>Flexibility</option>
-                <option>Cardio</option>
-                <option>Muscle Gain</option>
-                <option>Weight Loss</option>
-                <option>Yoga</option>
-              </select>
+
+              <div className="relative w-[516px]">
+                <select
+                  name="type"
+                  value={form.type}
+                  onChange={handleChange}
+                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
+                >
+                  <option value="">Select</option>
+                  <option>Strength</option>
+                  <option>Flexibility</option>
+                  <option>Cardio</option>
+                  <option>Muscle Gain</option>
+                  <option>Weight Loss</option>
+                  <option>Yoga</option>
+                </select>
+
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
 
-            <div className="flex items-center gap-16">
+
+            <div className="flex items-center gap-16 relative">
               <label className="w-[150px] text-sm font-urbanist font-medium">Equipment Required</label>
-              <select
-                name="equipment"
-                value={form.equipment}
-                onChange={handleChange}
-                className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">Select</option>
-                <option>None</option>
-                <option>Dumbells</option>
-                <option>Elastic Bands</option>
-                <option>Swiss Ball</option>
 
-              </select>
+              <div className="relative w-[516px]">
+                <select
+                  name="equipment"
+                  value={form.equipment}
+                  onChange={handleChange}
+                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
+                >
+                  <option value="">Select</option>
+                  <option>None</option>
+                  <option>Dumbells</option>
+                  <option>Elastic Bands</option>
+                  <option>Swiss Ball</option>
+                </select>
 
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
+
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Calories Burned</label>
