@@ -6,7 +6,7 @@ import TableHeader from '@components/ambassador_program/TableHeader';
 // import type { SubscriptionUser } from '../../types/api';
 import withAuth from '../../utils/withAuth';
 // import { userService } from '@services/user.service';
-import WorkoutTable from '@components/ambassador_program/WorkoutTable';
+// import WorkoutTable from '@components/ambassador_program/WorkoutTable';
 import FaqTable from '@components/ambassador_program/FaqTable';
 
 const Workout_Metrics = () => {
