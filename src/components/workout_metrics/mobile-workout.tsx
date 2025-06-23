@@ -108,7 +108,7 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                           alt="Workout Banner"
                           className="h-1/3 w-full object-cover"
                         />:<img
-                        src="https://cdn.builder.io/api/v1/assets/bd4d945ca4724ec996b5b16cb2962d4c/screenshot-2025-06-18-231307-adee42?format=webp&width=800"
+                        src="/Gym_Mobility.png"
                         alt="Workout demonstration"
                         className="w-full h-full object-cover"
                       /> 
