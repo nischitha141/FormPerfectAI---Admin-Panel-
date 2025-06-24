@@ -25,12 +25,17 @@ interface WorkoutTableProps {
   requests: WorkoutTable[];
   searchQuery: string;
   filterType: string;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (size: number) => void;
 }
 
-const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filterType }) => {
+
+const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -66,41 +71,38 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filt
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    setCurrentPage(1); // Reset page on filter/search
-  }, [searchQuery, filterType]);
-const filteredRequests = requests.filter((request) => {
-  const query = searchQuery?.toLowerCase() || '';
-  const filter = filterType || '';
 
-  const matchesSearch =
-    request.WorkoutName.toLowerCase().includes(query) ||
-    request.TrainerName.toLowerCase().includes(query) ||
-    request.Rounds.toLowerCase().includes(query) ||
-    request.Duration.toLowerCase().includes(query) ||
-    request.DifficultyLevel.toLowerCase().includes(query) ||
-    request.WorkoutType.toLowerCase().includes(query);
+  const filteredRequests = requests.filter((request) => {
+    const query = searchQuery?.toLowerCase() || '';
+    const filter = filterType || '';
 
-  const matchesFilter = filter === '' || request.WorkoutType === filter;
+    const matchesSearch =
+      request.WorkoutName.toLowerCase().includes(query) ||
+      request.TrainerName.toLowerCase().includes(query) ||
+      request.Rounds.toLowerCase().includes(query) ||
+      request.Duration.toLowerCase().includes(query) ||
+      request.DifficultyLevel.toLowerCase().includes(query) ||
+      request.WorkoutType.toLowerCase().includes(query);
 
-  return matchesSearch && matchesFilter;
-});
+    const matchesFilter = filter === '' || request.WorkoutType?.toLowerCase().split(',').map(x => x.trim()).includes(filter.toLowerCase());
+
+
+    return matchesSearch && matchesFilter;
+  });
+
 
 
   const sortedRequests = sortConfig
     ? [...filteredRequests].sort((a, b) => {
-        const aVal = a[sortConfig.key];
-        const bVal = b[sortConfig.key];
-        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-        return 0;
-      })
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    })
     : filteredRequests;
 
-  const totalPages = Math.ceil(sortedRequests.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentRequests = filteredRequests.slice(startIndex, startIndex + itemsPerPage);
-
+  const currentRequests = sortedRequests;
   const handleSort = (key: keyof WorkoutTable) => {
     setSortConfig((prev) => {
       if (prev?.key === key) {
@@ -208,13 +210,15 @@ const filteredRequests = requests.filter((request) => {
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-4 px-6 py-3 bg-[#FBFBFD] rounded-lg">
+        {/* Items per page selector */}
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">Show</span>
           <select
             value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
             className="border border-gray-200 rounded-lg px-2 py-1 text-sm"
           >
+
             <option value={10}>10</option>
             <option value={20}>20</option>
             <option value={50}>50</option>
@@ -222,19 +226,18 @@ const filteredRequests = requests.filter((request) => {
           <span className="text-sm text-gray-600">per page</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Page navigation */}
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </span>
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >
@@ -242,6 +245,7 @@ const filteredRequests = requests.filter((request) => {
           </button>
         </div>
       </div>
+
 
       <ConfirmationDialog
         isOpen={isSuspendDialogOpen}
