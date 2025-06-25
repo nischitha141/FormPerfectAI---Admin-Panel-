@@ -1,50 +1,120 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-// import { workoutFormState, exerciseFormState } from '@lib/recoil/workoutFormState';
-// import { useRecoilValue } from 'recoil';
+import { useWorkoutStore } from '@lib/store/workoutFormState';
 import { CloudUpload } from 'lucide-react';
 import Link from 'next/link';
 import { MobileWorkout } from '@components/workout_metrics/mobile-workout';
+const fallbackImagePath = '/Gym_Mobility.png';
 const AddNewWorkoutStep2Page = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  // const workoutForm = useRecoilValue(workoutFormState);
-  // const exerciseForm = useRecoilValue(exerciseFormState);
+  const { form: workoutForm, exerciseForm, setForm, setExerciseForm } = useWorkoutStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+
+  console.log("test", workoutForm, exerciseForm)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setUploadedImageUrl(imageUrl);
+      const imageUrl = URL.createObjectURL(file); // for preview
+      setUploadedImageUrl(imageUrl);              // show in <img src={uploadedImageUrl} />
+      setForm({ image: file });// for api
+
     }
   };
-  const handlePublish = () => {
-    // You can also call an API here before showing the modal
-    setShowModal(true);
-  };
+
+  useEffect(() => {
+    const handleFile = async () => {
+      const response = await fetch('/Gym_Mobility.png');
+      const blob = await response.blob();
+      const fallbackFile = new File([blob], 'Gym_Mobility.png', { type: blob.type });
+
+      const imageUrl = URL.createObjectURL(fallbackFile);
+      setUploadedImageUrl(imageUrl);
+
+      setForm({ image: fallbackFile });// for api
+    }
+    handleFile()
+
+  }, []);
+
+const handlePublish = async () => {
+  try {
+    setIsLoading(true);
+    setErrorToast(null);
+
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const formData = new FormData();
+
+    // ✅ Append fields matching the API
+    if (!(workoutForm.image instanceof File)) {
+      throw new Error("Image is missing or invalid.");
+    }
+
+    formData.append("image", workoutForm.image); // File
+    formData.append("name", workoutForm.workoutName); // ✅ Matches API's `name`
+    formData.append("description", workoutForm.description);
+    formData.append("totalTime", workoutForm.duration);
+    formData.append("totalBurnCalories", workoutForm.calories);
+    formData.append("focusArea", JSON.stringify(workoutForm.type));
+    formData.append("equipment", JSON.stringify([workoutForm.equipment]));
+    formData.append("exercises", JSON.stringify(workoutForm.muscleGroup)); // should be an array of {_id}
+    formData.append("goalCategoryId", "67924922313a2c911e92126b");
+
+    const res = await fetch(`${apiUrl}/api/admin/createWorkout`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+        // ❌ DO NOT set Content-Type manually
+      },
+      body: formData,
+    });
+
+    const text = await res.text();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("❌ Server response is not JSON:", text);
+      setErrorToast("Unexpected server response");
+      return;
+    }
+
+    if (!res.ok || data.success === false) {
+      setErrorToast(data.message || "Something went wrong");
+      setTimeout(() => setErrorToast(null), 3000);
+    } else {
+      setShowModal(true);
+    }
+
+  } catch (err) {
+    console.error("Publish error:", err);
+    setErrorToast(err instanceof Error ? err.message : "Something went wrong");
+    setTimeout(() => setErrorToast(null), 3000);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   const handleDone = () => {
     setShowModal(false);
     router.push("/workout_metrics"); // or any page you'd like to go to
   };
-  // const workoutForm = {
-  //   workoutName: "Full Body Burn",
-  //   description: "A high-intensity full-body workout that targets major muscle groups.",
-  //   muscleGroup: "Full Body",
-  //   difficulty: "Intermediate",
-  //   type: "Strength",
-  //   equipment: "Dumbbells, Mat",
-  //   calories: "450",
-  //   tags: "HIIT, Full Body, Fat Burn",
-  //   rounds: "3",
-  //   duration: "45 minutes",
-  //   videoFile: null, // You can mock this with a File object if needed
-  // };
-
-
-  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
 
 
@@ -55,7 +125,11 @@ const AddNewWorkoutStep2Page = () => {
           <span className="text-lg font-semibold text-gray-900 font-urbanist">Add New Workout</span>
           <span className="text-sm text-gray-500 font-urbanist">Manage and review user details, subscription status, and account activity.</span>
         </div>
-
+        {errorToast && (
+          <div className="fixed top-6 right-6 z-50 bg-white-500  px-6 py-4 rounded-lg shadow-lg w-[320px] animate-fade-in-out">
+            ⚠️ {errorToast}
+          </div>
+        )}
         <div className="border-t border-gray-200" />
         <div >
 
@@ -155,7 +229,7 @@ const AddNewWorkoutStep2Page = () => {
         </div>
       </div>
       {showModal && (
-       <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-brightness-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-brightness-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full relative shadow-lg">
             {/* Close button */}
             <button

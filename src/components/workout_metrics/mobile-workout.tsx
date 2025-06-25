@@ -1,12 +1,16 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { cn } from "../../utils/mobile";
 import { Timer, Flame } from 'lucide-react';
+import { useWorkoutStore } from '@lib/store/workoutFormState';
 interface MobileWorkoutProps {
   className?: string;
   uploadedImageUrl?:string|null;
 }
 
-export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps) {
+export function MobileWorkout({ className ,uploadedImageUrl}: MobileWorkoutProps) {
+  const { form: workoutForm, setForm } = useWorkoutStore();
+
   return (
     <div className={cn("flex items-center justify-center p-8", className)}>
       {/* iPhone Frame */}
@@ -103,20 +107,20 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                   <div className="relative mx-4 mb-4">
                     <div className=" bg-gray-800 rounded-2xl overflow-hidden relative">
                       {/* Video Content */}
-                      {uploadedImageUrl ?   <img
-                          src={uploadedImageUrl}
-                          alt="Workout Banner"
-                          className="h-1/3 w-full object-cover"
-                        />:<img
+                      {uploadedImageUrl? (<img
+                        src={uploadedImageUrl}
+                        alt="Workout Banner"
+                        className="h-1/3 w-full object-cover"
+                      />) : (<img
                         src="/Gym_Mobility.png"
                         alt="Workout demonstration"
                         className="w-full h-full object-cover"
-                      /> 
-                      
-                      }
-                      
+                      />)
 
-                     
+                      }
+
+
+
 
 
                     </div>
@@ -138,7 +142,7 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                           <div className="text-white text-xs">
                             <span className="font-medium">Time</span>
                             <br />
-                            <span className="font-semibold">20 min</span>
+                            <span className="font-semibold">{workoutForm.duration}</span>
                           </div>
                         </div>
 
@@ -153,7 +157,7 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                           <div className="text-white text-xs">
                             <span className="font-medium">Burn</span>
                             <br />
-                            <span className="font-semibold">56 kcal</span>
+                            <span className="font-semibold">{workoutForm.calories}</span>
                           </div>
                         </div>
                       </div>
@@ -163,29 +167,30 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                   <div className="px-4 space-y-6">
                     {/* Title */}
                     <h1 className="text-2xl font-bold text-white">
-                      Lower Body Workout
+                      {workoutForm.workoutName}
                     </h1>
 
                     {/* Description */}
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      The lower abdomen and hips are the most difficult areas of
-                      the body that we are going to do a difficult exercise.
-                      Even so this time, especially the legs or thighs, you can
-                      reduce weight even if you find it too hard.
+                      {workoutForm.description}
+
                     </p>
 
                     {/* Equipment */}
                     <div className="space-y-3">
                       <h3 className="text-white font-semibold">Equipment:</h3>
                       <p className="text-gray-300 text-sm">
-                        Dumbbells & Resistance Bands
+                        {workoutForm.equipment}
+
                       </p>
                     </div>
 
                     {/* Focus Areas */}
                     <div className="space-y-3">
                       <h3 className="text-white font-semibold">Focus Areas:</h3>
-                      <p className="text-gray-300 text-sm">Strength, Cardio</p>
+                      <p className="text-gray-300 text-sm">
+                        {workoutForm.muscleGroup}
+                      </p>
                     </div>
 
                     {/* Rounds */}
@@ -194,7 +199,8 @@ export function MobileWorkout({ className,uploadedImageUrl }: MobileWorkoutProps
                       <div className="flex items-center gap-2">
                         <span className="text-white text-lg font-bold">1</span>
                         <span className="text-gray-400">/</span>
-                        <span className="text-gray-400">3</span>
+                        <span className="text-gray-400">                        {workoutForm.rounds}
+                        </span>
                       </div>
                     </div>
 
