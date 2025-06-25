@@ -2,21 +2,8 @@
 import React, { useState } from 'react';
 import WorkoutVideoUpload from '@components/workout_metrics/WorkoutVideoUpload';
 import { useRouter } from 'next/navigation';
-import { exerciseFormState } from '@lib/recoil/workoutFormState';
-import { useSetRecoilState } from 'recoil';
-interface FormType {
-  workoutName: string;
-  description: string;
-  muscleGroup: string[];
-  difficulty: string;
-  type: string;
-  equipment: string;
-  calories: string;
-  tags: string;
-  rounds: string;
-  duration: string;
-  videoFile: File | null;
-}
+import { useWorkoutStore } from '@lib/store/workoutFormState';
+
 const exerciseOptions = [
   "Push Ups",
   "Squats",
@@ -28,33 +15,17 @@ const exerciseOptions = [
 const AddNewWorkoutStep1Page = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
-  // const setWorkoutForm = useSetRecoilState(workoutFormState);
-  const setExerciseForm = useSetRecoilState(exerciseFormState);
+  const { form, setForm, resetForm } = useWorkoutStore();
+  const { exerciseForm, setExerciseForm } = useWorkoutStore();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [form, setForm] = useState<FormType>({
-    workoutName: '',
-    description: '',
-    muscleGroup: [],
-    difficulty: '',
-    type: '',
-    equipment: '',
-    calories: '',
-    tags: '',
-    rounds: '',
-    duration: '',
-    videoFile: null as File | null,
-  });
-  const [excerciseForm, setExcerciseForm] = useState({
-    workoutName: '',
-    rounds: '',
-    duration: '',
-    videoFile: null as File | null,
-  });
-  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm({ [name]: value });
   };
   const handleChangeexercise = (exercise: string) => {
     const current = form.muscleGroup;
@@ -65,40 +36,71 @@ const AddNewWorkoutStep1Page = () => {
     setForm({ ...form, muscleGroup: updated });
   };
 
-  const handleUpload = (file: File) => {
-    setForm((prev) => ({ ...prev, videoFile: file }));
-  };
+  // const handleUpload = (file: File) => {
+  //   setForm({ videoFile: file });
+
+  // };
   const handleChangeExcercise = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setExcerciseForm((prev) => ({ ...prev, [name]: value }));
+    setExerciseForm({ [name]: value });
   };
 
   const handleUploadExcercise = (file: File) => {
-    setExcerciseForm((prev) => ({ ...prev, videoFile: file }));
+    setExerciseForm({ videoFile: file });
   };
 
-  // const validateForm = () => {
-  //   const newErrors: { [key: string]: string } = {};
-  //   if (!form.workoutName) newErrors.workoutName = 'Workout Name is required';
-  //   if (!form.difficulty) newErrors.difficulty = 'Difficulty Level is required';
-  //   if (!form.type) newErrors.type = 'Workout Type is required';
-  //   if (!form.videoFile) newErrors.videoFile = 'Workout Video is required';
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
+  const validateForm = () => {
+    const missingFields: string[] = [];
+
+    if (!form.workoutName) missingFields.push('Workout Name');
+    if (!form.description) missingFields.push('Description');
+    if (form.muscleGroup.length === 0) missingFields.push('Muscle Group');
+    if (!form.difficulty) missingFields.push('Difficulty');
+    if (!form.type) missingFields.push('Workout Type');
+    if (!form.equipment) missingFields.push('Equipment');
+    if (!form.calories) missingFields.push('Calories');
+    if (!form.tags) missingFields.push('Tags');
+    if (!form.rounds) missingFields.push('Rounds');
+    if (!form.duration) missingFields.push('Duration');
+    
+    console.log('missingFields:', missingFields);
+
+    if (missingFields.length > 0) {
+      const message = `${missingFields.join(', ')} cannot be empty`;
+      setErrorToast(message);
+      console.log('errorToast:', errorToast, message);
+
+      // Auto clear after 3 seconds
+      setTimeout(() => {
+        setErrorToast(null);
+      }, 3000);
+
+      return false;
+    }
+
+    return true;
+  };
+
 
   const handleSubmit = () => {
-    // if (validateForm()) {
-    console.log('Form submitted:', form);
-    if (activeTab === 'workout') {
-      // setWorkoutForm(form);
-    } else {
-      setExerciseForm(excerciseForm);
+
+
+    if (validateForm()) {
+      console.log('Form submitted:', form);
+      if (activeTab === 'workout') {
+        router.push('/workout_metrics/addnewworkout/step_2');
+      } else {
+        setExerciseForm(exerciseForm);
+      }
+      // console.log('Form submitted:', setWorkoutForm);
+
+      console.log('Form submitted:', exerciseForm);
+      // Adjust this as per your route structure
     }
-    console.log('Form submitted:', excerciseForm);
-    router.push('/workout_metrics/addnewworkout/step_2'); // Adjust this as per your route structure
-    // }
   };
+
+
+
 
   return (
     <div className="space-y-4 p-6">
@@ -109,6 +111,11 @@ const AddNewWorkoutStep1Page = () => {
 
       <div className="border-t border-gray-200" />
       <div >
+        {errorToast && (
+          <div className="fixed top-6 right-6 z-50 bg-white-500  px-6 py-4 rounded-lg shadow-lg w-[320px] animate-fade-in-out">
+            ⚠️ {errorToast}
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="mb-6 border-b border-gray-200">
@@ -136,10 +143,10 @@ const AddNewWorkoutStep1Page = () => {
         {activeTab === 'workout' && (
           <div className="space-y-7">
             {/* Reusable Row Style */}
-            <div className="flex items-start gap-16">
+            {/* <div className="flex items-start gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Workout Video</label>
               <WorkoutVideoUpload onUpload={handleUpload} uploadedFileName={form.videoFile?.name} />
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Workout Name</label>
@@ -363,7 +370,7 @@ const AddNewWorkoutStep1Page = () => {
             {/* Reusable Row Style */}
             <div className="flex items-start gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Workout Video</label>
-              <WorkoutVideoUpload onUpload={handleUploadExcercise} uploadedFileName={excerciseForm.videoFile?.name} />
+              <WorkoutVideoUpload onUpload={handleUploadExcercise} uploadedFileName={exerciseForm.videoFile?.name} />
             </div>
 
             <div className="flex items-center gap-16">
@@ -371,7 +378,7 @@ const AddNewWorkoutStep1Page = () => {
               <input
                 type="text"
                 name="workoutName"
-                value={excerciseForm.workoutName}
+                value={exerciseForm.workoutName}
                 onChange={handleChangeExcercise}
                 className="w-[516px] border border-gray-300 rounded-lg p-3 bg-white"
               />
@@ -384,7 +391,7 @@ const AddNewWorkoutStep1Page = () => {
               <input
                 type="number"
                 name="rounds"
-                value={excerciseForm.rounds}
+                value={exerciseForm.rounds}
                 onChange={handleChangeExcercise}
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
@@ -395,7 +402,7 @@ const AddNewWorkoutStep1Page = () => {
               <input
                 type="text"
                 name="duration"
-                value={excerciseForm.duration}
+                value={exerciseForm.duration}
                 onChange={handleChangeExcercise}
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
