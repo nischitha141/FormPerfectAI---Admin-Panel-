@@ -1,16 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { cn } from "../../utils/mobile";
 import { Timer, Flame } from 'lucide-react';
 import { useWorkoutStore } from '@lib/store/workoutFormState';
 interface MobileWorkoutProps {
   className?: string;
-  uploadedImageUrl?:string|null;
+  uploadedImageUrl?: string | null;
 }
 
-export function MobileWorkout({ className ,uploadedImageUrl}: MobileWorkoutProps) {
-  const { form: workoutForm, setForm } = useWorkoutStore();
+export function MobileWorkout({ className, uploadedImageUrl }: MobileWorkoutProps) {
 
+  const workoutForm = useWorkoutStore(state => state.form);
   return (
     <div className={cn("flex items-center justify-center p-8", className)}>
       {/* iPhone Frame */}
@@ -107,7 +107,7 @@ export function MobileWorkout({ className ,uploadedImageUrl}: MobileWorkoutProps
                   <div className="relative mx-4 mb-4">
                     <div className=" bg-gray-800 rounded-2xl overflow-hidden relative">
                       {/* Video Content */}
-                      {uploadedImageUrl? (<img
+                      {uploadedImageUrl ? (<img
                         src={uploadedImageUrl}
                         alt="Workout Banner"
                         className="h-1/3 w-full object-cover"

@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import TableHeader from '@components/ambassador_program/TableHeader';
 import withAuth from '../../utils/withAuth';
 import WorkoutTable from '@components/ambassador_program/WorkoutTable';
+type WorkoutAPIResponse = {
+  _id: string;
+  name: string;
+  totalTime: number;
+  goalCategoryId: { name?: string };
+  exercises?: unknown[];
+  focusArea?: string[];
+};
 
 
 const Workout_Metrics = () => {
@@ -15,44 +23,7 @@ const Workout_Metrics = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [workoutData, setWorkoutData] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const testRequests = [
-    {
-      id: '1',
-      WorkoutName: 'Full Body Blast',
-      TrainerName: 'AI',
-      Rounds: '5',
-      Duration: '30 min',
-      DifficultyLevel: 'Intermediate',
-      WorkoutType: 'Strength',
-    },
-    {
-      id: '2',
-      WorkoutName: '10-Minute HIIT Circuit',
-      TrainerName: 'AI',
-      Rounds: '10',
-      Duration: '10 min',
-      DifficultyLevel: 'Advanced',
-      WorkoutType: 'Cardio',
-    },
-    {
-      id: '3',
-      WorkoutName: 'Core Crusher',
-      TrainerName: 'Liam Carter',
-      Rounds: '12',
-      Duration: '45 min',
-      DifficultyLevel: 'Beginner',
-      WorkoutType: 'Flexibility',
-    },
-    {
-      id: '4',
-      WorkoutName: 'Upper Body Burn',
-      TrainerName: 'AI',
-      Rounds: '8',
-      Duration: '25 min',
-      DifficultyLevel: 'Intermediate',
-      WorkoutType: 'Strength, Flexibility',
-    },
-  ];
+
   const fetchData = async (page: number, limit: number) => {
     try {
       setIsLoading(true);
@@ -75,13 +46,13 @@ const Workout_Metrics = () => {
       const result = await res.json();
       const raw = result?.data?.data || [];
 
-      const formatted = raw.map((item: any) => ({
+      const formatted = raw.map((item: WorkoutAPIResponse) => ({
         id: item._id,
         WorkoutName: item.name,
         TrainerName: 'AI',
         Rounds: item.exercises?.length.toString() || '0',
         Duration: `${item.totalTime} min`,
-        DifficultyLevel: item.goalCategoryId.namr || 'N/A',
+        DifficultyLevel: item.goalCategoryId.name || 'N/A',
         WorkoutType: item.focusArea?.join(', ') || '',
       }));
 
@@ -137,6 +108,7 @@ const Workout_Metrics = () => {
             setItemsPerPage(limit);
             setCurrentPage(1);
           }}
+          fetchData={fetchData}
         />
 
       </div>
