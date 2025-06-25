@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   MoreVertical,
   Eye,
@@ -11,7 +11,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import ConfirmationDialog from './ConfirmationDialog';
-
+import { useRouter } from 'next/navigation';
 interface WorkoutTable {
   id: string;
   WorkoutName: string;
@@ -31,12 +31,13 @@ interface WorkoutTableProps {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
   onItemsPerPageChange: (size: number) => void;
+  fetchData?: (page: number, limit: number) => void; // Optional fetch function
 }
 
 
-const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
+const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-
+  const router = useRouter();
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -47,19 +48,44 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filt
     setSelectedRow(selectedRow === id ? null : id);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setSelectedRow(null);
-    }
-  };
 
-  const handleSuspendClick = () => {
+
+  const handleSuspendClick = (id: string) => {
+
     setIsSuspendDialogOpen(true);
-    setSelectedRow(null);
+    setSelectedRow(id);
   };
 
-  const handleSuspendConfirm = () => {
+  const handleSuspendConfirm = async () => {
     // TODO: Implement suspend logic here
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ workoutId: selectedRow }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (fetchData) {
+          fetchData(currentPage, itemsPerPage); // Refresh data after deletion
+        }
+      }
+
+      else {
+        alert(data.message || "Failed to delete workout");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("An error occurred while deleting");
+    }
     setIsSuspendDialogOpen(false);
   };
 
@@ -67,10 +93,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filt
     setIsSuspendDialogOpen(false);
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
 
 
   const filteredRequests = requests.filter((request) => {
@@ -123,6 +146,20 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filt
     );
   };
 
+  const handleViewClick = (id: string, e: React.MouseEvent): void => {
+    e.stopPropagation();
+    router.push(`/workout_metrics/addnewworkout/step_2?workoutId=${id}`);
+
+    setSelectedRow(null); // Optionally close the menu after viewing
+  }
+  const handleEditClick = (id: string, e: React.MouseEvent): void => {
+    e.stopPropagation();
+    router.push(`/workout_metrics/addnewworkout/step_1?workoutId=${id}`);
+
+    setSelectedRow(null); // Optionally close the menu after viewing
+  }
+
+
   return (
     <div className="mt-6">
       <div className="overflow-x-auto">
@@ -168,25 +205,28 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ requests, searchQuery, filt
                     </button>
 
                     {selectedRow === request.id && (
-                      <div className="absolute right-2 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                      <div
+                        className="absolute right-2 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+
+                      >
                         <div className="py-1">
                           <button
                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                            onClick={() => alert('View clicked')}
+                            onClick={(e) => handleViewClick(request.id, e)} // Prevents closing the menu
                           >
                             <Eye className="w-4 h-4 mr-2" />
                             View Details
                           </button>
                           <button
                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                            onClick={() => alert('Edit clicked')}
+                            onClick={(e) => handleEditClick(request.id, e)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </button>
                           <button
                             className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full"
-                            onClick={() => handleSuspendClick()}
+                            onClick={() => handleSuspendClick(request.id)}
                           >
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete
