@@ -27,7 +27,7 @@ const AddNewWorkoutStep2Page = () => {
       setForm({ image: file });// for api
     }
   };
- 
+
 
   useEffect(() => {
     const handleFile = async () => {
@@ -43,7 +43,49 @@ const AddNewWorkoutStep2Page = () => {
     handleFile()
 
   }, []);
+  useEffect(() => {
+    const fetchWorkout = async () => {
+      if (!workoutId) return;
 
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById?workoutId=${workoutId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const result = await res.json();
+
+        const workout = result.data?.data;
+
+        if (workout) {
+          setForm({
+            workoutName: workout.name || '',
+            description: workout.description || '',
+            muscleGroup: workout.exercises.exercisesId ? [workout.exercises.exercisesId] : [],
+            focusArea: workout.focusArea || '',
+            equipment: workout.equipment || '', 
+            calories: workout.totalBurnCalories?.toString() || '',
+            Workouttype: workout.type,
+            duration: workout.duration?.toString() || '',
+            image: new File([], 'placeholder.jpg'),
+          });
+          setUploadedImageUrl(workout.media?.[0]?.url || null);
+        }
+
+
+        if (!res.ok || result.success === false) {
+          setErrorToast(result.message || "Failed to fetch workout");
+          return;
+        }
+      } catch (err) {
+        setErrorToast("Something went wrong" + (err instanceof Error ? `: ${err.message}` : ""));
+      }
+    };
+
+    fetchWorkout();
+  }, [workoutId]);
   const handlePublish = async () => {
     try {
       setIsLoading(true);
