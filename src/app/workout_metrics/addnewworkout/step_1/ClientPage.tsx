@@ -20,7 +20,10 @@ const AddNewWorkoutStep1Page = () => {
   const { exerciseForm, setExerciseForm } = useWorkoutStore();
   const [showDropdown, setShowDropdown] = useState(false);
   const [errorToast, setErrorToast] = useState<string | null>(null);
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const filteredOptions = exerciseOptions.filter((opt) =>
+    opt.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm({ [name]: value });
@@ -141,6 +144,7 @@ const AddNewWorkoutStep1Page = () => {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById?workoutId=${workoutId}`, {
+
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -174,15 +178,60 @@ const AddNewWorkoutStep1Page = () => {
 
     fetchWorkout();
   }, [workoutId]);
-  const handleSaveExerciseAndContinue = async () => {
-    try {
-      // Call your save API
-      // await saveExerciseData(form); // replace with your actual save logic
+  const validateExerciseForm = () => {
+    const missingFields: string[] = [];
 
-      // Then move to the next tab
-      setActiveTab('workout');
-    } catch (error) {
-      console.error('Error saving exercise:', error);
+    if (!exerciseForm.Name) missingFields.push("Exercise Name");
+    if (!exerciseForm.difficulty) missingFields.push("Difficulty");
+    if (!exerciseForm.rounds) missingFields.push("Rounds");
+    if (!exerciseForm.duration) missingFields.push("Duration");
+    if (!exerciseForm.image) missingFields.push("Image");
+    if (!exerciseForm.videoFile) missingFields.push("Video");
+
+    if (missingFields.length > 0) {
+      const message = `${missingFields.join(", ")} cannot be empty`;
+      setErrorToast(message); // Your existing toast handler
+
+      // Auto-clear after 3 seconds
+      setTimeout(() => setErrorToast(null), 3000);
+
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSaveExerciseAndContinue = async () => {
+    if (validateExerciseForm()) {
+      try {
+
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const formData = new FormData();
+        if (exerciseForm.image) {
+          formData.append("image", exerciseForm.image);
+        }
+
+        if (exerciseForm.videoFile) {
+          formData.append("video", exerciseForm.videoFile);
+        }
+        formData.append("name", exerciseForm.Name);
+        formData.append("difficulty", exerciseForm.difficulty);
+        formData.append("duration", exerciseForm.rounds);
+
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals/exercise`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        if (res.ok) {
+          setActiveTab('workout');
+        }
+      } catch (error) {
+        console.error('Error saving exercise:', error);
+      }
     }
   };
 
@@ -282,20 +331,36 @@ const AddNewWorkoutStep1Page = () => {
 
                 {showDropdown && (
                   <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
-                    {exerciseOptions.map((exercise) => (
-                      <label
-                        key={exercise._id}
-                        className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={form.muscleGroup.includes(exercise._id)}
-                          onChange={() => handleChangeexercise(exercise._id)}
-                          className="mr-2"
-                        />
-                        {exercise.name}
-                      </label>
-                    ))}
+                    {/* Search box */}
+                    <div className="px-4 py-2">
+                      <input
+                        type="text"
+                        placeholder="Search exercises..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                      />
+                    </div>
+
+                    {/* Filtered options */}
+                    {filteredOptions.length > 0 ? (
+                      filteredOptions.map((exercise) => (
+                        <label
+                          key={exercise._id}
+                          className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={form.muscleGroup.includes(exercise._id)}
+                            onChange={() => handleChangeexercise(exercise._id)}
+                            className="mr-2"
+                          />
+                          {exercise.name}
+                        </label>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-500">No results found</div>
+                    )}
                   </div>
                 )}
               </div>
@@ -467,8 +532,8 @@ const AddNewWorkoutStep1Page = () => {
               <label className="w-[150px] text-sm font-urbanist font-medium">Exercise Name</label>
               <input
                 type="text"
-                name="workoutName"
-                value={exerciseForm.workoutName}
+                name="Name"
+                value={exerciseForm.Name}
                 onChange={handleChangeExcercise}
                 className="w-[516px] border border-gray-300 rounded-lg p-3 bg-white"
               />
@@ -485,9 +550,9 @@ const AddNewWorkoutStep1Page = () => {
                   className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
                 >
                   <option value="">Select</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
                 </select>
 
                 {/* Dropdown icon */}

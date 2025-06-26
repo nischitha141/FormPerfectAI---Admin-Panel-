@@ -14,12 +14,12 @@ type WorkoutFormType = {
 
 
 type ExerciseFormType = {
-  workoutName: string;
+  Name: string;
   rounds: string;
   duration: string;
-  videoFile: File | null;
+  videoFile: File | null ;
   difficulty: string;
-  image: File;
+  image: File | null;
 };
 
 type WorkoutStore = {
@@ -45,12 +45,12 @@ const defaultWorkoutForm: WorkoutFormType = {
 };
 
 const defaultExerciseForm: ExerciseFormType = {
-  workoutName: '',
+  Name: '',
   rounds: '',
   duration: '',
-  videoFile: null,
+  videoFile:null, // Placeholder for video file
   difficulty: '',
-  image: new File([], 'Gym_Mobility.png', { type: 'image/png' }),
+  image: null 
 
 };
 
