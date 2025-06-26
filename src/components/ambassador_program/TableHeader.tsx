@@ -11,10 +11,13 @@ type TableHeaderProps = {
   filterType?: string;
   setFilterType?: (value: string) => void;
   addFaq?: boolean,
+  addambassadors?: boolean,
+  addpayout?: boolean,
 
 };
 
-const TableHeader: React.FC<TableHeaderProps> = ({ title, addFaq = false, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
+
+const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout= false,addambassadors = false, addFaq = false, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
   return (
     <div className="space-y-4">
       {/* Header with Download */}
@@ -119,7 +122,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addFaq = false, addNew
           </div>
 
           {/* Date Range Picker */}
-          {!addNewWorkOut && !addFaq && (
+          {!addNewWorkOut && !addFaq && !addambassadors && !addpayout &&(
             <div className="w-full md:w-48">
               <input
                 type="text"
