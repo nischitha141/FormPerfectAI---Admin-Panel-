@@ -18,7 +18,7 @@ interface WorkoutTable {
   TrainerName: string;
   Rounds: string;
   Duration: string;
-  DifficultyLevel: string;
+  // DifficultyLevel: string;
   WorkoutType: string;
 }
 
@@ -105,7 +105,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
       request.TrainerName.toLowerCase().includes(query) ||
       request.Rounds.toLowerCase().includes(query) ||
       request.Duration.toLowerCase().includes(query) ||
-      request.DifficultyLevel.toLowerCase().includes(query) ||
+      // request.DifficultyLevel.toLowerCase().includes(query) ||
       request.WorkoutType.toLowerCase().includes(query);
 
     const matchesFilter = filter === '' || request.WorkoutType?.toLowerCase().split(',').map(x => x.trim()).includes(filter.toLowerCase());
@@ -171,7 +171,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
                 { label: 'Trainer Name', key: 'TrainerName' },
                 { label: 'Rounds', key: 'Rounds' },
                 { label: 'Duration', key: 'Duration' },
-                { label: 'Difficulty Level', key: 'DifficultyLevel' },
+                // { label: 'Difficulty Level', key: 'DifficultyLevel' },
                 { label: 'Workout Type', key: 'WorkoutType' },
               ].map((col) => (
                 <th
@@ -193,7 +193,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.TrainerName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Rounds}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Duration}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.DifficultyLevel}</td>
+                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.DifficultyLevel}</td> */}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.WorkoutType}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium relative">
                   <div ref={menuRef}>
