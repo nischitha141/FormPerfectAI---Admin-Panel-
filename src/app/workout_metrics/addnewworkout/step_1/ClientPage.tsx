@@ -210,14 +210,13 @@ const AddNewWorkoutStep1Page = () => {
         if (exerciseForm.image) {
           formData.append("image", exerciseForm.image);
         }
-
         if (exerciseForm.videoFile) {
           formData.append("video", exerciseForm.videoFile);
         }
         formData.append("name", exerciseForm.Name);
         formData.append("difficulty", exerciseForm.difficulty);
         formData.append("duration", exerciseForm.duration);
-
+        console.log(exerciseForm.duration,'duration');
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals/exercise`, {
           method: 'POST',
