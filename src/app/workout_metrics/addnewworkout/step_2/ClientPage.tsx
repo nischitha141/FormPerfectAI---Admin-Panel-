@@ -14,66 +14,20 @@ const AddNewWorkoutStep2Page = () => {
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const { form: workoutForm,  setForm } = useWorkoutStore();
+  const { form: workoutForm, setForm } = useWorkoutStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errorToast, setErrorToast] = useState<string | null>(null);
 
- 
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file); // for preview
       setUploadedImageUrl(imageUrl);              // show in <img src={uploadedImageUrl} />
       setForm({ image: file });// for api
-
     }
   };
-  useEffect(() => {
-    const fetchWorkout = async () => {
-      if (!workoutId) return;
-
-      try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById?workoutId=${workoutId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const result = await res.json();
-
-        const workout = result.data?.data;
-
-        if (workout) {
-          setForm({
-            workoutName: workout.name || '',
-            description: workout.description || '',
-            muscleGroup: workout.focusArea ? [workout.focusArea] : [],
-            difficulty: workout.intensity || '',
-            type: workout.type || '',
-            equipment: workout.equipment || '',
-            calories: workout.totalBurnCalories?.toString() || '',
-            tags: '', // No tag field in API, leave blank or map if you add it
-            rounds: workout.exercises?.length?.toString() || '1',
-            duration: workout.totalTime?.toString() || '',
-            image: new File([], 'placeholder.jpg'), // still needed due to type definition
-          });
-
-          setUploadedImageUrl(workout.media?.[0]?.url || null);
-        }
-
-
-        if (!res.ok || result.success === false) {
-          setErrorToast(result.message || "Failed to fetch workout");
-          return;
-        }
-      } catch (err) {
-        setErrorToast("Something went wrong" + (err instanceof Error ? `: ${err.message}` : ""));
-      }
-    };
-
-    fetchWorkout();
-  }, [workoutId]);
+ 
 
   useEffect(() => {
     const handleFile = async () => {
@@ -104,25 +58,31 @@ const AddNewWorkoutStep2Page = () => {
       if (!(workoutForm.image instanceof File)) {
         throw new Error("Image is missing or invalid.");
       }
+      if (workoutId) {
+        formData.append("workoutId", workoutId);
+      }
 
       formData.append("image", workoutForm.image); // File
       formData.append("name", workoutForm.workoutName); // ✅ Matches API's `name`
       formData.append("description", workoutForm.description);
       formData.append("totalTime", workoutForm.duration);
       formData.append("totalBurnCalories", workoutForm.calories);
-      formData.append("focusArea", JSON.stringify([workoutForm.type]));
+      formData.append("focusArea", JSON.stringify([workoutForm.focusArea]));
       formData.append("equipment", JSON.stringify([workoutForm.equipment]));
-      formData.append("exercises", JSON.stringify(workoutForm.muscleGroup)); // should be an array of {_id}
-      formData.append("goalCategoryId", "67924922313a2c911e92126b");
+      formData.append("exercises", JSON.stringify(workoutForm.muscleGroup.map((id) => ({ _id: id }))));
+      formData.append("goalCategoryId", workoutForm.Workouttype);
 
-      const res = await fetch(`${apiUrl}/api/admin/createWorkout`, {
-        method: 'POST',
+      const endpoint = workoutId ? "updateWorkout" : "createWorkout";
+      const method = workoutId ? "PATCH" : "POST";
+
+      const res = await fetch(`${apiUrl}/api/admin/${endpoint}`, {
+        method,
         headers: {
-          Authorization: `Bearer ${token}`
-          // ❌ DO NOT set Content-Type manually
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
+
 
       const text = await res.text();
 
@@ -272,7 +232,7 @@ const AddNewWorkoutStep2Page = () => {
                 Back
               </button>
             </Link>
-            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50" onClick={handlePublish} disabled={!!workoutId}>Publish</button>
+            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50" onClick={handlePublish} >Publish</button>
 
           </div>
         </div>
@@ -300,7 +260,7 @@ const AddNewWorkoutStep2Page = () => {
               Workout Published Successfully
             </h2>
             <p className=" text-sm text-gray-600 mb-6">
-              Your new workout <span className="font-semibold">Lower Body Workout</span> has been
+              Your new workout <span className="font-semibold">{workoutForm.workoutName}</span> has been
               successfully published and is now live for users to access.
             </p>
 
