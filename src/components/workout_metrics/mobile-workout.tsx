@@ -194,15 +194,16 @@ export function MobileWorkout({ className, uploadedImageUrl }: MobileWorkoutProp
                     </div>
 
                     {/* Rounds */}
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                       <h3 className="text-white font-semibold">Rounds:</h3>
                       <div className="flex items-center gap-2">
                         <span className="text-white text-lg font-bold">1</span>
                         <span className="text-gray-400">/</span>
-                        <span className="text-gray-400">                        {workoutForm.rounds}
+                        <span className="text-gray-400">              
+                          {workoutForm.rounds}
                         </span>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Warm Up Section */}
                     <div className="bg-gray-900 rounded-2xl p-4 flex items-center justify-between">

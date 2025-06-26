@@ -4,19 +4,18 @@ import WorkoutVideoUpload from '@components/workout_metrics/WorkoutVideoUpload';
 import { useRouter } from 'next/navigation';
 import { useWorkoutStore } from '@lib/store/workoutFormState';
 import { useSearchParams } from 'next/navigation';
-const exerciseOptions = [
-  "Push Ups",
-  "Squats",
-  "Deadlifts",
-  "Plank",
-  "Pull Ups",
-  "Lunges",
-];
+import WorkoutImageUpload from '@components/workout_metrics/WorkoutImageUpload';
+type ExerciseOption = {
+  _id: string;
+  name: string;
+};
+
 const AddNewWorkoutStep1Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const workoutId = searchParams.get('workoutId');
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
+  const [exerciseOptions, setExerciseOptions] = useState<ExerciseOption[]>([]);
   const { form, setForm } = useWorkoutStore();
   const { exerciseForm, setExerciseForm } = useWorkoutStore();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -25,21 +24,22 @@ const AddNewWorkoutStep1Page = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm({ [name]: value });
+    console.log('Form updated:', { [name]: value });
   };
-  const handleChangeexercise = (exercise: string) => {
-    const current = form.muscleGroup;
-    const updated = current.includes(exercise)
-      ? current.filter((e) => e !== exercise)
-      : [...current, exercise];
+  const handleChangeexercise = (exerciseId: string) => {
+    const updated = form.muscleGroup.includes(exerciseId)
+      ? form.muscleGroup.filter((id) => id !== exerciseId)
+      : [...form.muscleGroup, exerciseId];
 
-    setForm({ ...form, muscleGroup: updated });
+    setForm({ muscleGroup: updated });
   };
 
 
-  // const handleUpload = (file: File) => {
-  //   setForm({ videoFile: file });
 
-  // };
+  const handleUpload = (file: File) => {
+    setExerciseForm({ image: file });
+
+  };
   const handleChangeExcercise = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setExerciseForm({ [name]: value });
@@ -55,19 +55,19 @@ const AddNewWorkoutStep1Page = () => {
     if (!form.workoutName) missingFields.push('Workout Name');
     if (!form.description) missingFields.push('Description');
     if (form.muscleGroup.length === 0) missingFields.push('Muscle Group');
-    if (!form.difficulty) missingFields.push('Difficulty');
-    if (!form.type) missingFields.push('Workout Type');
+    // if (!form.difficulty) missingFields.push('Difficulty');
+    if (!form.focusArea) missingFields.push('focus Type');
     if (!form.equipment) missingFields.push('Equipment');
     if (!form.calories) missingFields.push('Calories');
-    if (!form.tags) missingFields.push('Tags');
-    if (!form.rounds) missingFields.push('Rounds');
+    if (!form.Workouttype) missingFields.push('Workout Type');
+    // if (!form.rounds) missingFields.push('Rounds');
     if (!form.duration) missingFields.push('Duration');
 
 
     if (missingFields.length > 0) {
       const message = `${missingFields.join(', ')} cannot be empty`;
       setErrorToast(message);
-     
+
 
       // Auto clear after 3 seconds
       setTimeout(() => {
@@ -85,13 +85,52 @@ const AddNewWorkoutStep1Page = () => {
 
 
     if (validateForm()) {
-     
-      
+
+      if (workoutId) {
+        router.push(`/workout_metrics/addnewworkout/step_2?workoutId=${workoutId}`);
+
+      } else {
         router.push('/workout_metrics/addnewworkout/step_2');
-      
-      
+
+      }
+
+
     }
   };
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        if (!token) {
+          console.error("No token found in localStorage.");
+          return;
+        }
+
+        const response = await fetch(`${apiUrl}/api/admin/exersices`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const resJson = await response.json();
+        console.log("Fetched exercises:", resJson);
+
+        if (Array.isArray(resJson.data?.data)) {
+          setExerciseOptions(resJson.data.data);
+        } else {
+          console.error("Unexpected response format:", resJson);
+        }
+      } catch (err) {
+        console.error("Failed to fetch exercises:", err);
+      }
+    };
+
+    fetchExercises();
+  }, []);
+
 
 
   useEffect(() => {
@@ -114,21 +153,16 @@ const AddNewWorkoutStep1Page = () => {
           setForm({
             workoutName: workout.name || '',
             description: workout.description || '',
-            muscleGroup: workout.focusArea ? [workout.focusArea] : [],
-            difficulty: workout.intensity || '',
-            type: workout.type || '',
+            muscleGroup: workout.exercises?.map((ex: { exerciseId: string; }) => ex.exerciseId) || [],
+            focusArea: workout.focusArea || '',
             equipment: workout.equipment || '',
             calories: workout.totalBurnCalories?.toString() || '',
-            tags: '', // No tag field in API, leave blank or map if you add it
-            rounds: workout.exercises?.length?.toString() || '1',
-            duration: workout.totalTime?.toString() || '',
-            image: workout.media?.[0]?.url || null, // still needed due to type definition
+            Workouttype: workout.goalCategoryId?.name || '',
+            duration: workout.duration?.toString() || '',
+            image: new File([], 'placeholder.jpg'),
           });
 
-          // setUploadedImageUrl(workout.media?.[0]?.url || null);
         }
-
-
         if (!res.ok || result.success === false) {
           setErrorToast(result.message || "Failed to fetch workout");
           return;
@@ -140,6 +174,18 @@ const AddNewWorkoutStep1Page = () => {
 
     fetchWorkout();
   }, [workoutId]);
+  const handleSaveExerciseAndContinue = async () => {
+    try {
+      // Call your save API
+      // await saveExerciseData(form); // replace with your actual save logic
+
+      // Then move to the next tab
+      setActiveTab('workout');
+    } catch (error) {
+      console.error('Error saving exercise:', error);
+    }
+  };
+
 
   return (
     <div className="space-y-4 p-6">
@@ -182,10 +228,7 @@ const AddNewWorkoutStep1Page = () => {
         {activeTab === 'workout' && (
           <div className="space-y-7">
             {/* Reusable Row Style */}
-            {/* <div className="flex items-start gap-16">
-              <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Workout Video</label>
-              <WorkoutVideoUpload onUpload={handleUpload} uploadedFileName={form.videoFile?.name} />
-            </div> */}
+
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Workout Name</label>
@@ -214,21 +257,21 @@ const AddNewWorkoutStep1Page = () => {
 
             <div className="flex items-center gap-16 relative">
               <label className="w-[150px] text-sm font-urbanist font-medium">Select Exercise</label>
-
               <div className="w-[516px] relative">
-                {/* Styled input box with a dropdown arrow */}
                 <div
-                  className="border border-gray-300 rounded-lg px-3 py-2 cursor-pointer flex justify-between items-center "
+                  className="border border-gray-300 rounded-lg px-3 py-2 cursor-pointer flex justify-between items-center"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
-                  <span className="text-sm ">
+                  <span className="text-sm">
                     {form.muscleGroup.length > 0
-                      ? form.muscleGroup.join(", ")
+                      ? exerciseOptions
+                        .filter((opt) => form.muscleGroup.includes(opt._id))
+                        .map((opt) => opt.name)
+                        .join(", ")
                       : "Select exercises"}
                   </span>
                   <svg
-                    className={`w-4 h-4 ml-2 transform transition-transform ${showDropdown ? "rotate-180" : "rotate-0"
-                      }`}
+                    className={`w-4 h-4 ml-2 transform transition-transform ${showDropdown ? "rotate-180" : "rotate-0"}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -237,21 +280,20 @@ const AddNewWorkoutStep1Page = () => {
                   </svg>
                 </div>
 
-                {/* Dropdown list */}
                 {showDropdown && (
-                  <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto ">
+                  <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
                     {exerciseOptions.map((exercise) => (
                       <label
-                        key={exercise}
-                        className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm "
+                        key={exercise._id}
+                        className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                       >
                         <input
                           type="checkbox"
-                          checked={form.muscleGroup.includes(exercise)}
-                          onChange={() => handleChangeexercise(exercise)}
-                          className="mr-2 "
+                          checked={form.muscleGroup.includes(exercise._id)}
+                          onChange={() => handleChangeexercise(exercise._id)}
+                          className="mr-2"
                         />
-                        {exercise}
+                        {exercise.name}
                       </label>
                     ))}
                   </div>
@@ -260,44 +302,19 @@ const AddNewWorkoutStep1Page = () => {
             </div>
 
 
-            <div className="flex items-center gap-16 relative">
-              <label className="w-[150px] text-sm font-urbanist font-medium">Difficulty Level</label>
 
-              <div className="relative w-[516px]">
-                <select
-                  name="difficulty"
-                  value={form.difficulty}
-                  onChange={handleChange}
-                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
-                >
-                  <option value="">Select</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
-                </select>
 
-                {/* Dropdown icon */}
-                <svg
-                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
 
 
             <hr className="border-t border-gray-200" />
 
             <div className="flex items-center gap-16 relative">
-              <label className="w-[150px] text-sm font-urbanist font-medium">Workout Type</label>
+              <label className="w-[150px] text-sm font-urbanist font-medium">Focus Type</label>
 
               <div className="relative w-[516px]">
                 <select
-                  name="type"
-                  value={form.type}
+                  name="focusArea"
+                  value={form.focusArea}
                   onChange={handleChange}
                   className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
                 >
@@ -364,7 +381,7 @@ const AddNewWorkoutStep1Page = () => {
               />
             </div>
 
-            <div className="flex items-center gap-16">
+            {/* <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Tags</label>
               <input
                 type="text"
@@ -373,11 +390,41 @@ const AddNewWorkoutStep1Page = () => {
                 onChange={handleChange}
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
+            </div> */}
+            <div className="flex items-center gap-16 relative">
+              <label className="w-[150px] text-sm font-urbanist font-medium">Workout Type</label>
+
+              <div className="relative w-[516px]">
+                <select
+                  name="Workouttype"
+                  value={form.Workouttype}
+                  onChange={handleChange}
+                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
+                >
+                  <option value="">Select</option>
+                  <option>Lose weight</option>
+                  <option>Build Muscle</option>
+                  <option>Improve endurance</option>
+                  <option>Enhance flexibility</option>
+                  <option>Maintain general fitness</option>
+                  <option>Gain healthy weight</option>
+                </select>
+
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
 
             <hr className="border-t border-gray-200" />
 
-            <div className="flex items-center gap-16">
+            {/* <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Number of Rounds</label>
               <input
                 type="number"
@@ -386,7 +433,7 @@ const AddNewWorkoutStep1Page = () => {
                 onChange={handleChange}
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Total Duration</label>
@@ -408,12 +455,16 @@ const AddNewWorkoutStep1Page = () => {
           <div className="space-y-7">
             {/* Reusable Row Style */}
             <div className="flex items-start gap-16">
-              <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Workout Video</label>
+              <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Exercise Image</label>
+              <WorkoutImageUpload onUpload={handleUpload} uploadedFileName={exerciseForm.image?.name} />
+            </div>
+            <div className="flex items-start gap-16">
+              <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Exercise Video</label>
               <WorkoutVideoUpload onUpload={handleUploadExcercise} uploadedFileName={exerciseForm.videoFile?.name} />
             </div>
 
             <div className="flex items-center gap-16">
-              <label className="w-[150px] text-sm font-urbanist font-medium">Workout Name</label>
+              <label className="w-[150px] text-sm font-urbanist font-medium">Exercise Name</label>
               <input
                 type="text"
                 name="workoutName"
@@ -423,7 +474,33 @@ const AddNewWorkoutStep1Page = () => {
               />
             </div>
 
+            <div className="flex items-center gap-16 relative">
+              <label className="w-[150px] text-sm font-urbanist font-medium">Difficulty Level</label>
 
+              <div className="relative w-[516px]">
+                <select
+                  name="difficulty"
+                  value={exerciseForm.difficulty}
+                  onChange={handleChangeExcercise}
+                  className="w-full appearance-none border border-gray-300 rounded-lg px-3 py-2 text-sm font-urbanist pr-10"
+                >
+                  <option value="">Select</option>
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+
+                {/* Dropdown icon */}
+                <svg
+                  className="w-4 h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Number of Rounds</label>
@@ -453,13 +530,23 @@ const AddNewWorkoutStep1Page = () => {
 
         {/* Submit Button */}
         <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Next: Preview
-          </button>
+          {activeTab === 'exercise' ? (
+            <button
+              onClick={handleSaveExerciseAndContinue}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Save
+            </button>
+          ) : activeTab === 'workout' ? (
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Next: Preview
+            </button>
+          ) : null}
         </div>
+
       </div>
     </div>
   );

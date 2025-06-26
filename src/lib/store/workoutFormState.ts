@@ -3,22 +3,23 @@ import { create } from 'zustand';
 type WorkoutFormType = {
   workoutName: string;
   description: string;
-  muscleGroup: string[];
-  difficulty: string;
-  type: string;
+  muscleGroup: string[];// excercise type: string[],
+  focusArea:string,
+  Workouttype: string;
   equipment: string;
   calories: string;
-  tags: string;
-  rounds: string;
   duration: string;
-  image:File ;
+  image: File;
 };
+
 
 type ExerciseFormType = {
   workoutName: string;
   rounds: string;
   duration: string;
   videoFile: File | null;
+  difficulty: string;
+  image: File;
 };
 
 type WorkoutStore = {
@@ -35,14 +36,12 @@ const defaultWorkoutForm: WorkoutFormType = {
   workoutName: '',
   description: '',
   muscleGroup: [],
-  difficulty: '',
-  type: '',
+  Workouttype: '',
+  focusArea:'',
   equipment: '',
   calories: '',
-  tags: '',
-  rounds: '',
   duration: '',
-  image: new File([], 'Gym_Mobility.png', { type: 'image/png' }) ,
+  image: new File([], 'Gym_Mobility.png', { type: 'image/png' }),
 };
 
 const defaultExerciseForm: ExerciseFormType = {
@@ -50,6 +49,9 @@ const defaultExerciseForm: ExerciseFormType = {
   rounds: '',
   duration: '',
   videoFile: null,
+  difficulty: '',
+  image: new File([], 'Gym_Mobility.png', { type: 'image/png' }),
+
 };
 
 export const useWorkoutStore = create<WorkoutStore>((set) => ({
