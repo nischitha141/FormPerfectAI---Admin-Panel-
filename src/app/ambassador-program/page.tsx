@@ -194,7 +194,7 @@ const Ambassador = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <TableHeader title={"Ambassador List"}/>
+        <TableHeader title={"Ambassador List"} addambassadors={true}/>
         <AmbassadorTable ambassadors={ambassadors} />
       </div>
     </div>

@@ -89,7 +89,7 @@ const PayoutsPage = () => {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <TableHeader title="Payout Requests Table" />
+        <TableHeader title="Payout Requests Table" addpayout={true}/>
         <PayoutRequestsTable requests={transformedPayoutData} />
       </div>
     </div>
