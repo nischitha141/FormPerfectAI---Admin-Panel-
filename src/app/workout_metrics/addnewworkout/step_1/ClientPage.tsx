@@ -216,7 +216,7 @@ const AddNewWorkoutStep1Page = () => {
         }
         formData.append("name", exerciseForm.Name);
         formData.append("difficulty", exerciseForm.difficulty);
-        formData.append("duration", exerciseForm.rounds);
+        formData.append("duration", exerciseForm.duration);
 
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals/exercise`, {
