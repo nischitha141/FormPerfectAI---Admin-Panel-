@@ -53,7 +53,7 @@ const Workout_Metrics = () => {
         Rounds: item.exercises?.length.toString() || '0',
         Duration: `${item.totalTime} min`,
         DifficultyLevel: item.goalCategoryId.name || 'N/A',
-        WorkoutType: item.focusArea?.join(', ') || '',
+        WorkoutType: item.goalCategoryId.name || 'N/A',
       }));
 
       setWorkoutData(formatted);

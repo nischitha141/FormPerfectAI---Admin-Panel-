@@ -567,7 +567,7 @@ const AddNewWorkoutStep1Page = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-16">
+            {/* <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Number of Rounds</label>
               <input
                 type="number"
@@ -576,7 +576,7 @@ const AddNewWorkoutStep1Page = () => {
                 onChange={handleChangeExcercise}
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Total Duration</label>
