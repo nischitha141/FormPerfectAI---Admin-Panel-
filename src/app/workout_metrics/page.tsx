@@ -31,7 +31,7 @@ const Workout_Metrics = () => {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-
+      console.log("token", token)
       const res = await fetch(
         `${apiUrl}/api/admin/Workouts?page=${page}&limit=${limit}`,
         {

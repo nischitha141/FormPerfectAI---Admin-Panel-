@@ -183,7 +183,7 @@ const AddNewWorkoutStep1Page = () => {
 
     if (!exerciseForm.Name) missingFields.push("Exercise Name");
     if (!exerciseForm.difficulty) missingFields.push("Difficulty");
-    if (!exerciseForm.rounds) missingFields.push("Rounds");
+    // if (!exerciseForm.rounds) missingFields.push("Rounds");
     if (!exerciseForm.duration) missingFields.push("Duration");
     if (!exerciseForm.image) missingFields.push("Image");
     if (!exerciseForm.videoFile) missingFields.push("Video");

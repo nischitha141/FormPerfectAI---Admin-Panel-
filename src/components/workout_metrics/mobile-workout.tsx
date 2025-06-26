@@ -189,7 +189,7 @@ export function MobileWorkout({ className, uploadedImageUrl }: MobileWorkoutProp
                     <div className="space-y-3">
                       <h3 className="text-white font-semibold">Focus Areas:</h3>
                       <p className="text-gray-300 text-sm">
-                        {workoutForm.muscleGroup}
+                        {workoutForm.focusArea}
                       </p>
                     </div>
 
