@@ -63,7 +63,13 @@ const AddNewWorkoutStep2Page = () => {
           setForm({
             workoutName: workout.name || '',
             description: workout.description || '',
-            muscleGroup: workout.exercises.exercisesId ? [workout.exercises.exercisesId] : [],
+            muscleGroup: workout.exercises.map(
+              (exercise: { name: string; _id: string; duration: string }) => ({
+                name: exercise.name,
+                id: exercise._id,
+                duration: exercise.duration
+              })
+            ),
             focusArea: workout.focusArea || '',
             equipment: workout.equipment || '',
             calories: workout.totalBurnCalories?.toString() || '',
@@ -319,7 +325,7 @@ const AddNewWorkoutStep2Page = () => {
             </div>
           </div>
         </div>
-      )} 
+      )}
     </div>
   );
 };

@@ -143,7 +143,7 @@ const AddNewWorkoutStep2Page = () => {
       }
 
     } catch (err) {
-      console.error("Publish error:", err);
+      console.error("Update error:", err);
       setErrorToast(err instanceof Error ? err.message : "Something went wrong");
       setTimeout(() => setErrorToast(null), 3000);
     } finally {
@@ -272,7 +272,7 @@ const AddNewWorkoutStep2Page = () => {
                 Back
               </button>
             </Link>
-            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50" onClick={handlePublish} >Publish</button>
+            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50" onClick={handlePublish} >Update</button>
 
           </div>
         </div>
@@ -291,7 +291,9 @@ const AddNewWorkoutStep2Page = () => {
             {/* Success icon */}
             <div className="flex justify-start mb-4">
               <div className="w-10 h-10 bg-green-100 text-green-600 flex items-center justify-center rounded-full">
-                ✓
+                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.5 11L9.5 14L15.5 8M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#079455" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
               </div>
             </div>
 
