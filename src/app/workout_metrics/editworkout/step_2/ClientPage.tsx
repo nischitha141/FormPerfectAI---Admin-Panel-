@@ -43,49 +43,49 @@ const AddNewWorkoutStep2Page = () => {
     handleFile()
 
   }, []);
-  useEffect(() => {
-    const fetchWorkout = async () => {
-      if (!workoutId) return;
+  // useEffect(() => {
+  //   const fetchWorkout = async () => {
+  //     if (!workoutId) return;
 
-      try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  //     try {
+  //       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById?workoutId=${workoutId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const result = await res.json();
+  //       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/WorkoutById?workoutId=${workoutId}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       const result = await res.json();
 
-        const workout = result.data?.data;
+  //       const workout = result.data?.data;
 
-        if (workout) {
-          setForm({
-            workoutName: workout.name || '',
-            description: workout.description || '',
-            muscleGroup: workout.exercises.exercisesId ? [workout.exercises.exercisesId] : [],
-            focusArea: workout.focusArea || '',
-            equipment: workout.equipment || '', 
-            calories: workout.totalBurnCalories?.toString() || '',
-            Workouttype: workout.type,
-            duration: workout.duration?.toString() || '',
-            image: new File([], 'placeholder.jpg'),
-          });
-          setUploadedImageUrl(workout.media?.[0]?.url || null);
-        }
+  //       if (workout) {
+  //         setForm({
+  //           workoutName: workout.name || '',
+  //           description: workout.description || '',
+  //           muscleGroup: workout.exercises.exercisesId ? [workout.exercises.exercisesId] : [],
+  //           focusArea: workout.focusArea || '',
+  //           equipment: workout.equipment || '', 
+  //           calories: workout.totalBurnCalories?.toString() || '',
+  //           Workouttype: workout.type,
+  //           duration: workout.duration?.toString() || '',
+  //           image: new File([], 'placeholder.jpg'),
+  //         });
+  //         setUploadedImageUrl(workout.media?.[0]?.url || null);
+  //       }
 
 
-        if (!res.ok || result.success === false) {
-          setErrorToast(result.message || "Failed to fetch workout");
-          return;
-        }
-      } catch (err) {
-        setErrorToast("Something went wrong" + (err instanceof Error ? `: ${err.message}` : ""));
-      }
-    };
+  //       if (!res.ok || result.success === false) {
+  //         setErrorToast(result.message || "Failed to fetch workout");
+  //         return;
+  //       }
+  //     } catch (err) {
+  //       setErrorToast("Something went wrong" + (err instanceof Error ? `: ${err.message}` : ""));
+  //     }
+  //   };
 
-    fetchWorkout();
-  }, [workoutId]);
+  //   fetchWorkout();
+  // }, [workoutId]);
   const handlePublish = async () => {
     try {
       setIsLoading(true);
@@ -114,10 +114,9 @@ const AddNewWorkoutStep2Page = () => {
       formData.append("exercises", JSON.stringify(workoutForm.muscleGroup.map((id) => ({ _id: id }))));
       formData.append("goalCategoryId", workoutForm.Workouttype);
 
-     
 
-      const res = await fetch(`${apiUrl}/api/admin/createWorkout`, {
-        method:"POST",
+      const res = await fetch(`${apiUrl}/api/admin/updateWorkout`, {
+        method:"PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -273,7 +272,7 @@ const AddNewWorkoutStep2Page = () => {
                 Back
               </button>
             </Link>
-            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePublish} disabled={!!workoutId}>Publish</button>
+            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50" onClick={handlePublish} >Publish</button>
 
           </div>
         </div>
@@ -298,11 +297,11 @@ const AddNewWorkoutStep2Page = () => {
 
             {/* Title and content */}
             <h2 className=" font-semibold text-lg mb-2">
-              Workout Published Successfully
+              Workout Updated Successfully
             </h2>
             <p className=" text-sm text-gray-600 mb-6">
               Your new workout <span className="font-semibold">{workoutForm.workoutName}</span> has been
-              successfully published and is now live for users to access.
+              successfully Updated and is now live for users to access.
             </p>
 
             {/* Done button */}

@@ -8,7 +8,6 @@ import WorkoutImageUpload from '@components/workout_metrics/WorkoutImageUpload';
 type ExerciseOption = {
   _id: string;
   name: string;
-  duration: number;
 };
 
 const AddNewWorkoutStep1Page = () => {
@@ -59,20 +58,16 @@ const AddNewWorkoutStep1Page = () => {
     if (!form.workoutName) missingFields.push('Workout Name');
     if (!form.description) missingFields.push('Description');
     if (form.muscleGroup.length === 0) missingFields.push('Exercises');
-    // if (!form.difficulty) missingFields.push('Difficulty');
     if (!form.focusArea) missingFields.push('focus Type');
     if (!form.equipment) missingFields.push('Equipment');
     if (!form.calories) missingFields.push('Calories');
     if (!form.Workouttype) missingFields.push('Workout Type');
-    // if (!form.rounds) missingFields.push('Rounds');
-    // if (!form.duration) missingFields.push('Duration');
+    if (!form.duration) missingFields.push('Duration');
 
 
     if (missingFields.length > 0) {
       const message = `${missingFields.join(', ')} cannot be empty`;
       setErrorToast(message);
-
-
       // Auto clear after 3 seconds
       setTimeout(() => {
         setErrorToast(null);
@@ -84,21 +79,9 @@ const AddNewWorkoutStep1Page = () => {
     return true;
   };
 
-
   const handleSubmit = () => {
-
-
     if (validateForm()) {
-
-      if (workoutId) {
-        router.push(`/workout_metrics/addnewworkout/step_2?workoutId=${workoutId}`);
-
-      } else {
-        router.push('/workout_metrics/addnewworkout/step_2');
-
-      }
-
-
+        router.push(`/workout_metrics/editworkout/step_2?workoutId=${workoutId}`);
     }
   };
   useEffect(() => {
@@ -163,7 +146,7 @@ const AddNewWorkoutStep1Page = () => {
             equipment: workout.equipment || '',
             calories: workout.totalBurnCalories?.toString() || '',
             Workouttype: workout.goalCategoryId?.name || '',
-            // duration: workout.duration?.toString() || '',
+            duration: workout.duration?.toString() || '',
             image: new File([], 'placeholder.jpg'),
           });
 
@@ -217,7 +200,7 @@ const AddNewWorkoutStep1Page = () => {
         formData.append("name", exerciseForm.Name);
         formData.append("difficulty", exerciseForm.difficulty);
         formData.append("duration", exerciseForm.duration);
-
+        console.log(exerciseForm.duration,'duration');
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/goals/exercise`, {
           method: 'POST',
@@ -347,18 +330,15 @@ const AddNewWorkoutStep1Page = () => {
                       filteredOptions.map((exercise) => (
                         <label
                           key={exercise._id}
-                          className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm justify-between"
+                          className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                         >
-                          <div className="flex   ">
-                            <input
-                              type="checkbox"
-                              checked={form.muscleGroup.includes(exercise._id)}
-                              onChange={() => handleChangeexercise(exercise._id)}
-                              className="mr-2"
-                            />
-                            <span>{exercise.name}</span>
-                          </div>
-                          <span className="text-sm">{exercise.duration} mins</span>
+                          <input
+                            type="checkbox"
+                            checked={form.muscleGroup.includes(exercise._id)}
+                            onChange={() => handleChangeexercise(exercise._id)}
+                            className="mr-2"
+                          />
+                          {exercise.name}
                         </label>
                       ))
                     ) : (
@@ -503,7 +483,7 @@ const AddNewWorkoutStep1Page = () => {
               />
             </div> */}
 
-            {/* <div className="flex items-center gap-16">
+            <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Total Duration</label>
               <input
                 type="text"
@@ -513,8 +493,8 @@ const AddNewWorkoutStep1Page = () => {
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
 
-            </div> */}
-            {/* <div className="border-t border-gray-200 py-2" /> */}
+            </div>
+            <div className="border-t border-gray-200 py-2" />
 
           </div>
         )}
@@ -588,7 +568,6 @@ const AddNewWorkoutStep1Page = () => {
                 name="duration"
                 value={exerciseForm.duration}
                 onChange={handleChangeExcercise}
-                placeholder='in minutes e.g. 30sec as 1min as 1'
                 className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
               />
 

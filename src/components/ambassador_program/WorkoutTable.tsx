@@ -154,8 +154,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
   }
   const handleEditClick = (id: string, e: React.MouseEvent): void => {
     e.stopPropagation();
-    router.push(`/workout_metrics/addnewworkout/step_1?workoutId=${id}`);
-
+    router.push(`/workout_metrics/editworkout/step_1?workoutId=${id}`);
     setSelectedRow(null); // Optionally close the menu after viewing
   }
 
