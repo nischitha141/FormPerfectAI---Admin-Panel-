@@ -57,7 +57,7 @@ const AddNewWorkoutStep1Page = () => {
 
     if (!form.workoutName) missingFields.push('Workout Name');
     if (!form.description) missingFields.push('Description');
-    if (form.muscleGroup.length === 0) missingFields.push('Muscle Group');
+    if (form.muscleGroup.length === 0) missingFields.push('Exercises');
     // if (!form.difficulty) missingFields.push('Difficulty');
     if (!form.focusArea) missingFields.push('focus Type');
     if (!form.equipment) missingFields.push('Equipment');

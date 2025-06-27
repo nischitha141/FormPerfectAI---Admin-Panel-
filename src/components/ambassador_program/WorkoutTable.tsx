@@ -176,7 +176,7 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
               ].map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  className="px-6 py-3 text-left text-xs font-bold text-gray-500  tracking-wider cursor-pointer"
                   onClick={() => handleSort(col.key as keyof WorkoutTable)}
                 >
                   {col.label}

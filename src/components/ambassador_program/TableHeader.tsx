@@ -17,7 +17,7 @@ type TableHeaderProps = {
 };
 
 
-const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout= false,addambassadors = false, addFaq = false, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout = false, addambassadors = false, addFaq = false, addNewWorkOut = false, searchQuery, setSearchQuery, filterType, setFilterType }) => {
   return (
     <div className="space-y-4">
       {/* Header with Download */}
@@ -43,37 +43,44 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout= false,addam
         {/* Search Bar */}
         <div className="w-full md:w-[40%]">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             {addNewWorkOut ? (
               setSearchQuery ? (
-                <input
-                  type="text"
-                  placeholder="Search by Workout Name, Type..."
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search by Workout Name, Type..."
+                    className="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                </>
               ) : null
             ) : addFaq ? (
               setSearchQuery ? (
-                <input
-                  type="text"
-                  placeholder="Search by Name, Type..."
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search by Name, Type..."
+                    className="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                </>
               ) : null
             ) : (
-              <input
-                type="text"
-                placeholder="Search ambassadors..."
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <>
+                <input
+                  type="text"
+                  placeholder="Search ambassadors..."
+                  className="w-full pr-10 pl-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </>
             )}
-
-
           </div>
+
         </div>
 
         {/* Spacer to push filters to the right */}
@@ -89,13 +96,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout= false,addam
                 onChange={(e) => setFilterType(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="">Filter Status</option>
-                <option value="Strength">Strength</option>
-                <option value="Flexibility">Flexibility</option>
-                <option value="Cardio">Cardio</option>
-                <option value="Muscle_Gain">Muscle Gain</option>
-                <option value="Weight_Loss">Weight Loss</option>
-                <option value="Yoga">Yoga</option>
+                <option value="">Filter Type</option>
+                <option>Lose weight</option>
+                <option>Build Muscle</option>
+                <option>Improve endurance</option>
+                <option>Enhance flexibility</option>
+                <option>Maintain general fitness</option>
+                <option>Gain healthy weight</option>
               </select>
             ) : addFaq && setFilterType ? (
               <select
@@ -122,7 +129,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout= false,addam
           </div>
 
           {/* Date Range Picker */}
-          {!addNewWorkOut && !addFaq && !addambassadors && !addpayout &&(
+          {!addNewWorkOut && !addFaq && !addambassadors && !addpayout && (
             <div className="w-full md:w-48">
               <input
                 type="text"
