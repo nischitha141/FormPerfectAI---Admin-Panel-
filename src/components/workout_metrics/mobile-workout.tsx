@@ -142,7 +142,9 @@ export function MobileWorkout({ className, uploadedImageUrl }: MobileWorkoutProp
                           <div className="text-white text-xs">
                             <span className="font-medium">Time</span>
                             <br />
-                            <span className="font-semibold">{workoutForm.duration}</span>
+                            <span className="font-semibold">
+                              {workoutForm.muscleGroup.reduce((total, ex) => total + Number(ex.duration), 0)} mins
+                            </span>
                           </div>
                         </div>
 
@@ -206,30 +208,33 @@ export function MobileWorkout({ className, uploadedImageUrl }: MobileWorkoutProp
                     </div> */}
 
                     {/* Warm Up Section */}
-                    <div className="bg-gray-900 rounded-2xl p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-lime-500 rounded-full flex items-center justify-center">
-                          <svg
-                            className="w-5 h-5 text-black"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
-                          </svg>
+                    {workoutForm.muscleGroup.map((item) => (
+                      <div key={item.id} className="bg-gray-900 rounded-2xl p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-lime-500 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-5 h-5 text-black"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h4 className="text-white font-medium">{item.name}</h4>
+                            <p className="text-gray-400 text-sm">{item.duration} mins</p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-white font-medium">Warm Up</h4>
-                          <p className="text-gray-400 text-sm">Jumping Jack</p>
-                        </div>
+                        <svg
+                          className="w-6 h-6 text-lime-500"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
                       </div>
-                      <svg
-                        className="w-6 h-6 text-lime-500"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
+                    ))}
+
 
                     {/* Bottom spacing for scroll */}
                     <div className="h-20" />

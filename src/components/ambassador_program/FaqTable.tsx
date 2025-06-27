@@ -109,12 +109,12 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
   };
 
   const renderSortIcon = (key: keyof FaqTable) => {
-    if (sortConfig?.key !== key) return null;
-    return sortConfig.direction === 'asc' ? (
-      <ChevronUp className="inline w-3 h-3 ml-1" />
-    ) : (
-      <ChevronDown className="inline w-3 h-3 ml-1" />
-    );
+     const isActive = sortConfig?.key === key;
+    return sortConfig?.direction === 'asc' && isActive ? (
+          <ChevronUp className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
+        ) : (
+          <ChevronDown className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
+        );
   };
 
   return (
@@ -131,7 +131,7 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
               ].map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  className="px-6 py-3 text-left text-xs font-bold text-gray-500  tracking-wider cursor-pointer"
                   onClick={() => handleSort(col.key as keyof FaqTable)}
                 >
                   {col.label}

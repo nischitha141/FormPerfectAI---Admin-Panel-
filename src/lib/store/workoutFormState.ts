@@ -1,9 +1,13 @@
 import { create } from 'zustand';
-
+type MuscleGroupItem = {
+  id: string;
+  name: string;
+  duration: string;
+};
 type WorkoutFormType = {
   workoutName: string;
   description: string;
-  muscleGroup: string[];// excercise type: string[],
+  muscleGroup: MuscleGroupItem[];// excercise type: string[],
   focusArea:string,
   Workouttype: string;
   equipment: string;

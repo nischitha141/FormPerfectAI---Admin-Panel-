@@ -65,7 +65,7 @@ const AddNewWorkoutStep2Page = () => {
             description: workout.description || '',
             muscleGroup: workout.exercises.exercisesId ? [workout.exercises.exercisesId] : [],
             focusArea: workout.focusArea || '',
-            equipment: workout.equipment || '', 
+            equipment: workout.equipment || '',
             calories: workout.totalBurnCalories?.toString() || '',
             Workouttype: workout.type,
             duration: workout.duration?.toString() || '',
@@ -96,7 +96,7 @@ const AddNewWorkoutStep2Page = () => {
 
       const formData = new FormData();
 
-      // ✅ Append fields matching the API
+
       if (!(workoutForm.image instanceof File)) {
         throw new Error("Image is missing or invalid.");
       }
@@ -104,20 +104,20 @@ const AddNewWorkoutStep2Page = () => {
         formData.append("workoutId", workoutId);
       }
 
-      formData.append("image", workoutForm.image); // File
-      formData.append("name", workoutForm.workoutName); // ✅ Matches API's `name`
+      formData.append("image", workoutForm.image);
+      formData.append("name", workoutForm.workoutName);
       formData.append("description", workoutForm.description);
-      formData.append("totalTime", workoutForm.duration);
+      // formData.append("totalTime", workoutForm.duration);
       formData.append("totalBurnCalories", workoutForm.calories);
       formData.append("focusArea", JSON.stringify([workoutForm.focusArea]));
       formData.append("equipment", JSON.stringify([workoutForm.equipment]));
       formData.append("exercises", JSON.stringify(workoutForm.muscleGroup.map((id) => ({ _id: id }))));
       formData.append("goalCategoryId", workoutForm.Workouttype);
 
-     
+
 
       const res = await fetch(`${apiUrl}/api/admin/createWorkout`, {
-        method:"POST",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -269,12 +269,11 @@ const AddNewWorkoutStep2Page = () => {
           <div className="flex justify-end gap-6 p-3">
 
             <Link href={workoutId ? "/workout_metrics" : "/workout_metrics/addnewworkout/step_1"}>
-              <button className="px-4 py-2 text-sm border border-gray-300 rounded-md">
+              <button className="px-6 py-2 text-sm font-semibold border  border-gray-300 rounded-md h-[40px]">
                 Back
               </button>
             </Link>
-            <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePublish} disabled={!!workoutId}>Publish</button>
-
+            <button className="px-6 py-2 text-white bg-blue-600 font-semibold rounded-md w-[165px] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePublish} disabled={!!workoutId}>Publish</button>
           </div>
         </div>
       </div>
@@ -292,7 +291,11 @@ const AddNewWorkoutStep2Page = () => {
             {/* Success icon */}
             <div className="flex justify-start mb-4">
               <div className="w-10 h-10 bg-green-100 text-green-600 flex items-center justify-center rounded-full">
-                ✓
+
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.5 11L9.5 14L15.5 8M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#079455" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
               </div>
             </div>
 
@@ -316,7 +319,7 @@ const AddNewWorkoutStep2Page = () => {
             </div>
           </div>
         </div>
-      )}
+      )} 
     </div>
   );
 };
