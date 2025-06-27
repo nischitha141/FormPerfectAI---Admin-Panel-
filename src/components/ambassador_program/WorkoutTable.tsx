@@ -138,13 +138,15 @@ const WorkoutTable: React.FC<WorkoutTableProps> = ({ fetchData, requests, search
   };
 
   const renderSortIcon = (key: keyof WorkoutTable) => {
-    if (sortConfig?.key !== key) return null;
-    return sortConfig.direction === 'asc' ? (
-      <ChevronUp className="inline w-3 h-3 ml-1" />
+    const isActive = sortConfig?.key === key;
+
+    return sortConfig?.direction === 'asc' && isActive ? (
+      <ChevronUp className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
     ) : (
-      <ChevronDown className="inline w-3 h-3 ml-1" />
+      <ChevronDown className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
     );
   };
+
 
   const handleViewClick = (id: string, e: React.MouseEvent): void => {
     e.stopPropagation();

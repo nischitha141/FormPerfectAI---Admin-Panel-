@@ -8,7 +8,7 @@ import WorkoutImageUpload from '@components/workout_metrics/WorkoutImageUpload';
 type ExerciseOption = {
   _id: string;
   name: string;
-  duration: number;
+  duration: string;
 };
 
 const AddNewWorkoutStep1Page = () => {
@@ -31,14 +31,14 @@ const AddNewWorkoutStep1Page = () => {
     description: "",
     calories: "",
     exerciseName: "",
-    
+
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 
     const { name, value } = e.target;
     const alphabetOnly = /^[A-Za-z\s]*$/;
     const alphanumeric = /^[A-Za-z0-9\s]*$/;
-    
+
     let errorMsg = "";
     // Conditional validation per field
     if (name === "workoutName" || name === "exerciseName") {
@@ -57,13 +57,16 @@ const AddNewWorkoutStep1Page = () => {
     setErrors((prev) => ({ ...prev, [name]: errorMsg }));
     console.log('Form updated:', { [name]: value });
   };
-  const handleChangeexercise = (exerciseId: string) => {
-    const updated = form.muscleGroup.includes(exerciseId)
-      ? form.muscleGroup.filter((id) => id !== exerciseId)
-      : [...form.muscleGroup, exerciseId];
+  const handleChangeexercise = (exercise: { _id: string; name: string; duration: string }) => {
+    const exists = form.muscleGroup.some((item) => item.id === exercise._id);
+
+    const updated = exists
+      ? form.muscleGroup.filter((item) => item.id !== exercise._id)
+      : [...form.muscleGroup, { id: exercise._id, name: exercise.name, duration: exercise.duration }];
 
     setForm({ muscleGroup: updated });
   };
+
 
 
 
@@ -96,15 +99,15 @@ const AddNewWorkoutStep1Page = () => {
     if (missingFields.length > 0 || hasFormatErrors) {
       let message = "";
 
-    if (missingFields.length > 0) {
-      message += `${missingFields.join(', ')} cannot be empty. `;
-    }
+      if (missingFields.length > 0) {
+        message += `${missingFields.join(', ')} cannot be empty. `;
+      }
 
-    if (hasFormatErrors) {
-      message += "Please correct format errors in the form.";
-    }
+      if (hasFormatErrors) {
+        message += "Please correct format errors in the form.";
+      }
 
-    setErrorToast(message.trim());
+      setErrorToast(message.trim());
 
 
       // Auto clear after 3 seconds
@@ -344,15 +347,16 @@ const AddNewWorkoutStep1Page = () => {
               <label className="w-[150px] text-sm font-urbanist font-medium">Select Exercise</label>
               <div className="w-[516px] relative">
                 <div
-                  className="border border-gray-300 rounded-lg px-3 py-2 cursor-pointer flex justify-between items-center"
-                  onClick={() => setShowDropdown(!showDropdown)}
+                  tabIndex={0}
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                  onFocus={() => setShowDropdown(true)}
+                  className={`rounded-lg px-3 py-2 cursor-pointer flex justify-between items-center outline-none
+    ${showDropdown ? "border-2 border-black " : "border border-gray-300"}`}
                 >
+
                   <span className="text-sm">
                     {form.muscleGroup.length > 0
-                      ? exerciseOptions
-                        .filter((opt) => form.muscleGroup.includes(opt._id))
-                        .map((opt) => opt.name)
-                        .join(", ")
+                      ? form.muscleGroup.map((item) => item.name).join(", ")
                       : "Select exercises"}
                   </span>
                   <svg
@@ -380,23 +384,26 @@ const AddNewWorkoutStep1Page = () => {
 
                     {/* Filtered options */}
                     {filteredOptions.length > 0 ? (
-                      filteredOptions.map((exercise) => (
-                        <label
-                          key={exercise._id}
-                          className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm justify-between"
-                        >
-                          <div className="flex   ">
-                            <input
-                              type="checkbox"
-                              checked={form.muscleGroup.includes(exercise._id)}
-                              onChange={() => handleChangeexercise(exercise._id)}
-                              className="mr-2"
-                            />
-                            <span>{exercise.name}</span>
-                          </div>
-                          <span className="text-sm">{exercise.duration} mins</span>
-                        </label>
-                      ))
+                      filteredOptions.map((exercise) => {
+                        const isChecked = form.muscleGroup.some((item) => item.id === exercise._id);
+                        return (
+                          <label
+                            key={exercise._id}
+                            className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm justify-between"
+                          >
+                            <div className="flex">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => handleChangeexercise(exercise)}
+                                className="mr-2"
+                              />
+                              <span>{exercise.name}</span>
+                            </div>
+                            <span className="text-sm">{exercise.duration} mins</span>
+                          </label>
+                        );
+                      })
                     ) : (
                       <div className="px-4 py-2 text-sm text-gray-500">No results found</div>
                     )}

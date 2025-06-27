@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({
         {showAddNewWorkout && (
           <Link href={`/workout_metrics/addnewworkout/step_1`}>
             <button className="border border-[#1570EF] text-[#1570EF] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1570EF] hover:text-white transition-colors font-urbanist">
-              Add New WorkOut
+              Add New Workout
             </button>
           </Link>
         )}
