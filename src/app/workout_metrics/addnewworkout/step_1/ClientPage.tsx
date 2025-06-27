@@ -12,6 +12,7 @@ type ExerciseOption = {
 };
 
 const AddNewWorkoutStep1Page = () => {
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const workoutId = searchParams.get('workoutId');
@@ -25,9 +26,35 @@ const AddNewWorkoutStep1Page = () => {
   const filteredOptions = exerciseOptions.filter((opt) =>
     opt.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const [errors, setErrors] = useState({
+    workoutName: "",
+    description: "",
+    calories: "",
+    exerciseName: "",
+    
+  });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+
     const { name, value } = e.target;
+    const alphabetOnly = /^[A-Za-z\s]*$/;
+    const alphanumeric = /^[A-Za-z0-9\s]*$/;
+    
+    let errorMsg = "";
+    // Conditional validation per field
+    if (name === "workoutName" || name === "exerciseName") {
+      if (!alphabetOnly.test(value)) {
+        errorMsg = "Only alphabets are allowed.";
+      }
+    }
+
+    if (name === "description" || name === "calories") {
+      if (!alphanumeric.test(value)) {
+        errorMsg = "Only letters and numbers are allowed.";
+      }
+    }
+
     setForm({ [name]: value });
+    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
     console.log('Form updated:', { [name]: value });
   };
   const handleChangeexercise = (exerciseId: string) => {
@@ -59,18 +86,25 @@ const AddNewWorkoutStep1Page = () => {
     if (!form.workoutName) missingFields.push('Workout Name');
     if (!form.description) missingFields.push('Description');
     if (form.muscleGroup.length === 0) missingFields.push('Exercises');
-    // if (!form.difficulty) missingFields.push('Difficulty');
     if (!form.focusArea) missingFields.push('focus Type');
     if (!form.equipment) missingFields.push('Equipment');
     if (!form.calories) missingFields.push('Calories');
     if (!form.Workouttype) missingFields.push('Workout Type');
-    // if (!form.rounds) missingFields.push('Rounds');
-    // if (!form.duration) missingFields.push('Duration');
 
+
+    const hasFormatErrors = Object.values(errors).some((error) => error !== "");
+    if (missingFields.length > 0 || hasFormatErrors) {
+      let message = "";
 
     if (missingFields.length > 0) {
-      const message = `${missingFields.join(', ')} cannot be empty`;
-      setErrorToast(message);
+      message += `${missingFields.join(', ')} cannot be empty. `;
+    }
+
+    if (hasFormatErrors) {
+      message += "Please correct format errors in the form.";
+    }
+
+    setErrorToast(message.trim());
 
 
       // Auto clear after 3 seconds
@@ -184,18 +218,13 @@ const AddNewWorkoutStep1Page = () => {
 
     if (!exerciseForm.Name) missingFields.push("Exercise Name");
     if (!exerciseForm.difficulty) missingFields.push("Difficulty");
-    // if (!exerciseForm.rounds) missingFields.push("Rounds");
     if (!exerciseForm.duration) missingFields.push("Duration");
     if (!exerciseForm.image) missingFields.push("Image");
     if (!exerciseForm.videoFile) missingFields.push("Video");
-
     if (missingFields.length > 0) {
       const message = `${missingFields.join(", ")} cannot be empty`;
-      setErrorToast(message); // Your existing toast handler
-
-      // Auto-clear after 3 seconds
+      setErrorToast(message);
       setTimeout(() => setErrorToast(null), 3000);
-
       return false;
     }
 
@@ -277,19 +306,22 @@ const AddNewWorkoutStep1Page = () => {
         {activeTab === 'workout' && (
           <div className="space-y-7">
             {/* Reusable Row Style */}
-
-
             <div className="flex items-center gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium">Workout Name</label>
-              <input
-                type="text"
-                name="workoutName"
-                value={form.workoutName}
-                onChange={handleChange}
-                className="w-[516px] border border-gray-300 rounded-lg p-3 bg-white"
-              />
+              <div>
+                <input
+                  type="text"
+                  name="workoutName"
+                  value={form.workoutName}
+                  onChange={handleChange}
+                  className={`w-[516px] border rounded-lg p-3 bg-white ${errors.workoutName ? "border-red-500" : "border-gray-300"
+                    }`}
+                />
+                {errors.workoutName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.workoutName}</p>
+                )}
+              </div>
             </div>
-
             <div className="flex items-start gap-16">
               <label className="w-[150px] text-sm font-urbanist font-medium pt-2">Description</label>
               <div>
@@ -298,9 +330,13 @@ const AddNewWorkoutStep1Page = () => {
                   value={form.description}
                   onChange={handleChange}
                   maxLength={500}
-                  className="w-[516px] border border-gray-300 rounded-lg px-3 py-2 h-24"
+                  className={`w-[516px] border rounded-lg px-3 py-2 h-24 ${errors.description ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 <p className="text-xs text-gray-500 text-right">{form.description.length}/500</p>
+                {errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                )}
               </div>
             </div>
 
@@ -445,8 +481,12 @@ const AddNewWorkoutStep1Page = () => {
                 name="calories"
                 value={form.calories}
                 onChange={handleChange}
-                className="w-[516px] border border-gray-300 rounded-lg px-3 py-2"
+                className={`w-[516px] border rounded-lg px-3 py-2 ${errors.calories ? "border-red-500" : "border-gray-300"
+                  }`}
               />
+              {errors.calories && (
+                <p className="text-red-500 text-sm mt-1">{errors.calories}</p>
+              )}
             </div>
 
             {/* <div className="flex items-center gap-16">
@@ -609,7 +649,7 @@ const AddNewWorkoutStep1Page = () => {
           ) : activeTab === 'workout' ? (
             <button
               onClick={handleSubmit}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition mt-[20px] "
             >
               Next: Preview
             </button>

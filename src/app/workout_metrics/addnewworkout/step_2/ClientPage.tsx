@@ -96,7 +96,7 @@ const AddNewWorkoutStep2Page = () => {
 
       const formData = new FormData();
 
-      // ✅ Append fields matching the API
+      
       if (!(workoutForm.image instanceof File)) {
         throw new Error("Image is missing or invalid.");
       }
@@ -104,8 +104,8 @@ const AddNewWorkoutStep2Page = () => {
         formData.append("workoutId", workoutId);
       }
 
-      formData.append("image", workoutForm.image); // File
-      formData.append("name", workoutForm.workoutName); // ✅ Matches API's `name`
+      formData.append("image", workoutForm.image); 
+      formData.append("name", workoutForm.workoutName); 
       formData.append("description", workoutForm.description);
       formData.append("totalTime", workoutForm.duration);
       formData.append("totalBurnCalories", workoutForm.calories);
@@ -274,7 +274,6 @@ const AddNewWorkoutStep2Page = () => {
               </button>
             </Link>
             <button className="px-6 py-2 text-white bg-blue-600 rounded-md w-[165px] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePublish} disabled={!!workoutId}>Publish</button>
-
           </div>
         </div>
       </div>
