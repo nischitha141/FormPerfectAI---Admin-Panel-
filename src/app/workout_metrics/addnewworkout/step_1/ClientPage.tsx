@@ -38,7 +38,7 @@ const AddNewWorkoutStep1Page = () => {
     const { name, value } = e.target;
     const alphabetOnly = /^[A-Za-z\s]*$/;
     const alphanumeric = /^[A-Za-z0-9\s]*$/;
-
+    const descriptionRegex = /^[A-Za-z0-9\s.,-]*$/;
     let errorMsg = "";
     // Conditional validation per field
     if (name === "workoutName" || name === "exerciseName") {
@@ -47,7 +47,12 @@ const AddNewWorkoutStep1Page = () => {
       }
     }
 
-    if (name === "description" || name === "calories") {
+    if (name === "description") {
+      if (!descriptionRegex.test(value)) {
+        errorMsg = "Only letters, numbers are allowed.";
+      }
+    } 
+    if (name === "calories") {
       if (!alphanumeric.test(value)) {
         errorMsg = "Only letters and numbers are allowed.";
       }
