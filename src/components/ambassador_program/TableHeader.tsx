@@ -112,7 +112,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ title, addpayout = false, add
               >
                 <option value="">Filter Status</option>
                 <option value="active">Active</option>
-                <option value="hidden">Hidden</option>
+                <option value="hide">Hidden</option>
               </select>
             ) : (
               <select
