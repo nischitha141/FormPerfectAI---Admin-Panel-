@@ -60,7 +60,7 @@ const AddNewWorkoutStep1Page = () => {
 
     setForm({ [name]: value });
     setErrors((prev) => ({ ...prev, [name]: errorMsg }));
-    console.log('Form updated:', { [name]: value });
+   
   };
   const handleChangeexercise = (exercise: { _id: string; name: string; duration: string }) => {
     const exists = form.muscleGroup.some((item) => item.id === exercise._id);
@@ -162,7 +162,7 @@ const AddNewWorkoutStep1Page = () => {
         });
 
         const resJson = await response.json();
-        console.log("Fetched exercises:", resJson);
+       
 
         if (Array.isArray(resJson.data?.data)) {
           setExerciseOptions(resJson.data.data);

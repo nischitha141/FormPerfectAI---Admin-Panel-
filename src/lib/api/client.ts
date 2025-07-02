@@ -16,7 +16,7 @@ export class ApiClient {
   private router: NextRouter | null = null; // Store the router instance
 
   private constructor() {
-    console.log('Initializing API client with base URL:', process.env.NEXT_PUBLIC_API_URL);
+   
     this.client = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://51.20.130.75/',
       timeout: 10000,
@@ -26,12 +26,7 @@ export class ApiClient {
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = getToken();
-        console.log('Request config:', {
-          url: config.url,
-          method: config.method,
-          headers: config.headers,
-          hasToken: !!token
-        });
+       
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -43,11 +38,7 @@ export class ApiClient {
     // Add response interceptor to handle token expiration
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
-        console.log('Response received:', {
-          url: response.config.url,
-          status: response.status,
-          data: response.data
-        });
+      
         return response;
       },
       (error: AxiosError) => {
@@ -78,7 +69,7 @@ export class ApiClient {
 
   public async get<T>(url: string, config?: InternalAxiosRequestConfig): Promise<T> {
     try {
-      console.log('Making GET request to:', url);
+      
       const response = await this.client.get(url, config);
       return response.data;
     } catch (error: unknown) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   MoreVertical,
   Edit,
@@ -9,12 +9,12 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import ConfirmationDialog from './ConfirmationDialog';
-
+import { useRouter } from 'next/navigation';
 interface FaqTable {
   id: string;
   Order: string;
   Question: string;
-  AnswerPreview: string;
+  Answer: string;
   Status: string;
 
 }
@@ -23,15 +23,20 @@ interface FaqTableProps {
   requests: FaqTable[];
   searchQuery: string;
   filterType: string;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (size: number) => void;
+  fetchData?: (page: number, limit: number) => void;
 }
 
-const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }) => {
+const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
+ 
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const router = useRouter();
   const [sortConfig, setSortConfig] = useState<{ key: keyof FaqTable; direction: 'asc' | 'desc' } | null>(null);
 
   const handleActionClick = (id: string, e: React.MouseEvent) => {
@@ -39,46 +44,61 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
     setSelectedRow(selectedRow === id ? null : id);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setSelectedRow(null);
-    }
-  };
 
-  const handleSuspendClick = () => {
+  const handleSuspendClick = (id: string) => {
+
     setIsSuspendDialogOpen(true);
-    setSelectedRow(null);
+    setSelectedRow(id);
   };
 
-  const handleSuspendConfirm = () => {
+
+ const handleSuspendConfirm = async () => {
     // TODO: Implement suspend logic here
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/main/faq`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: selectedRow }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (fetchData) {
+          fetchData(currentPage, itemsPerPage); // Refresh data after deletion
+        }
+      }
+
+      else {
+        alert(data.message || "Failed to delete workout");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      // alert("An error occurred while deleting");
+    }
     setIsSuspendDialogOpen(false);
   };
 
   const handleDialogClose = () => {
     setIsSuspendDialogOpen(false);
   };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(1); // Reset page on filter/search
-  }, [searchQuery, filterType]);
   const filteredRequests = requests.filter((request) => {
     const query = searchQuery?.toLowerCase() || '';
     const filter = filterType || '';
-
     const matchesSearch =
-      request.AnswerPreview.toLowerCase().includes(query) ||
-      request.Order.toLowerCase().includes(query) ||
+      request.Answer.toLowerCase().includes(query) ||
+      // request.Order.toLowerCase().includes(query) ||
       request.Question.toLowerCase().includes(query) ||
       request.Status.toLowerCase().includes(query)
 
 
-    const matchesFilter = filter === '' || request.Status === filter;
+    const matchesFilter = filter === '' || request.Status.toLowerCase() === filter;
 
     return matchesSearch && matchesFilter;
   });
@@ -94,9 +114,11 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
     })
     : filteredRequests;
 
-  const totalPages = Math.ceil(sortedRequests.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentRequests = filteredRequests.slice(startIndex, startIndex + itemsPerPage);
+  const currentRequests = sortedRequests;
+
+
+
+
 
   const handleSort = (key: keyof FaqTable) => {
     setSortConfig((prev) => {
@@ -109,13 +131,15 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
   };
 
   const renderSortIcon = (key: keyof FaqTable) => {
-     const isActive = sortConfig?.key === key;
+    const isActive = sortConfig?.key === key;
     return sortConfig?.direction === 'asc' && isActive ? (
-          <ChevronUp className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
-        ) : (
-          <ChevronDown className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
-        );
+      <ChevronUp className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
+    ) : (
+      <ChevronDown className={`inline w-3 h-3 ml-1 ${isActive ? 'text-gray-700' : 'text-gray-400'}`} />
+    );
   };
+
+
 
   return (
     <div className="mt-6">
@@ -124,7 +148,7 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
           <thead className="bg-[#FBFBFD]">
             <tr>
               {[
-                { label: 'Order', key: 'Order' },
+                // { label: 'Order', key: 'Order' },
                 { label: 'Question', key: 'Question' },
                 { label: 'AnswerPreview', key: 'AnswerPreview' },
                 { label: 'Status', key: 'Status' },
@@ -144,19 +168,19 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
           <tbody className="bg-white divide-y divide-gray-200">
             {currentRequests.map((request) => (
               <tr key={request.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Order}</td>
+                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Order}</td> */}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Question}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.AnswerPreview}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Answer}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${request.Status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : request.Status === "Hidden"
-                          ? "bg-[#FFEBD6] text-[#FF8000]"
-                          : "bg-gray-100 text-gray-700"
+                      ? "bg-green-100 text-green-700"
+                      : request.Status === "Hide"
+                        ? "bg-[#FFEBD6] text-[#FF8000]"
+                        : "bg-gray-100 text-gray-700"
                       }`}
                   >
-                    {request.Status}
+                    {request.Status === "Hide" ? "Hidden" : request.Status}
                   </span>
                 </td>
 
@@ -175,14 +199,14 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
 
                           <button
                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                            onClick={() => alert('Edit clicked')}
+                             onClick={() => router.push(`/faq?id=${request.id}`)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </button>
                           <button
                             className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full"
-                            onClick={() => handleSuspendClick()}
+                            onClick={() => handleSuspendClick(request.id)}
                           >
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete
@@ -211,7 +235,7 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
           <span className="text-sm text-gray-600">Show</span>
           <select
             value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
             className="border border-gray-200 rounded-lg px-2 py-1 text-sm"
           >
             <option value={10}>10</option>
@@ -223,7 +247,7 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === 1}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >
@@ -233,7 +257,8 @@ const FaqTable: React.FC<FaqTableProps> = ({ requests, searchQuery, filterType }
             Page {currentPage} of {totalPages}
           </span>
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => onPageChange(currentPage + 1)}
+
             disabled={currentPage === totalPages}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >

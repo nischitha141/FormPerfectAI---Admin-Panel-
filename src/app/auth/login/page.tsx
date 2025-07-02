@@ -29,7 +29,7 @@ const LoginPage = () => {
         password
       });
 
-      console.log(response);
+    
 
       // Store token based on keepLoggedIn preference
       const storage = keepLoggedIn ? localStorage : sessionStorage;
