@@ -31,8 +31,8 @@ interface FaqTableProps {
   fetchData?: (page: number, limit: number) => void;
 }
 
-const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
- 
+const FaqTable: React.FC<FaqTableProps> = ({ fetchData, requests, searchQuery, filterType, currentPage, totalPages, itemsPerPage, onPageChange, onItemsPerPageChange }) => {
+
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [isSuspendDialogOpen, setIsSuspendDialogOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, fi
   };
 
 
- const handleSuspendConfirm = async () => {
+  const handleSuspendConfirm = async () => {
     // TODO: Implement suspend logic here
 
     try {
@@ -148,7 +148,7 @@ const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, fi
           <thead className="bg-[#FBFBFD]">
             <tr>
               {[
-                // { label: 'Order', key: 'Order' },
+                { label: 'Order', key: 'Order' },
                 { label: 'Question', key: 'Question' },
                 { label: 'AnswerPreview', key: 'AnswerPreview' },
                 { label: 'Status', key: 'Status' },
@@ -166,11 +166,12 @@ const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, fi
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {currentRequests.map((request) => (
+            {currentRequests.map((request, index) => (
               <tr key={request.id}>
-                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Order}</td> */}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Question}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{request.Answer}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate"
+                  title={request.Answer}>{request.Answer}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${request.Status === "Active"
@@ -199,7 +200,7 @@ const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, fi
 
                           <button
                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                             onClick={() => router.push(`/faq?id=${request.id}`)}
+                            onClick={() => router.push(`/faq?id=${request.id}`)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
@@ -247,7 +248,7 @@ const FaqTable: React.FC<FaqTableProps> = ({fetchData, requests, searchQuery, fi
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
             className="p-1 rounded-lg border border-gray-200 disabled:opacity-50"
           >
