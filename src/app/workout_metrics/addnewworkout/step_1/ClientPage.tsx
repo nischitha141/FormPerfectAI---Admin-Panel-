@@ -19,7 +19,8 @@ const AddNewWorkoutStep1Page = () => {
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
   const [exerciseOptions, setExerciseOptions] = useState<ExerciseOption[]>([]);
   const { form, setForm } = useWorkoutStore();
-  const { exerciseForm, setExerciseForm } = useWorkoutStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const { exerciseForm, setExerciseForm, resetExerciseForm } = useWorkoutStore();
   const [showDropdown, setShowDropdown] = useState(false);
   const [errorToast, setErrorToast] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,7 +52,7 @@ const AddNewWorkoutStep1Page = () => {
       if (!descriptionRegex.test(value)) {
         errorMsg = "Only letters, numbers are allowed.";
       }
-    } 
+    }
     if (name === "calories") {
       if (!alphanumeric.test(value)) {
         errorMsg = "Only letters and numbers are allowed.";
@@ -60,7 +61,7 @@ const AddNewWorkoutStep1Page = () => {
 
     setForm({ [name]: value });
     setErrors((prev) => ({ ...prev, [name]: errorMsg }));
-   
+
   };
   const handleChangeexercise = (exercise: { _id: string; name: string; duration: string }) => {
     const exists = form.muscleGroup.some((item) => item.id === exercise._id);
@@ -162,7 +163,7 @@ const AddNewWorkoutStep1Page = () => {
         });
 
         const resJson = await response.json();
-       
+
 
         if (Array.isArray(resJson.data?.data)) {
           setExerciseOptions(resJson.data.data);
@@ -240,9 +241,10 @@ const AddNewWorkoutStep1Page = () => {
   };
 
   const handleSaveExerciseAndContinue = async () => {
+
     if (validateExerciseForm()) {
       try {
-
+        setIsLoading(true);
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const formData = new FormData();
         if (exerciseForm.image) {
@@ -264,14 +266,23 @@ const AddNewWorkoutStep1Page = () => {
           body: formData,
         });
         if (res.ok) {
+          resetExerciseForm();
           setActiveTab('workout');
         }
       } catch (error) {
         console.error('Error saving exercise:', error);
+      }finally {
+        setIsLoading(false);
       }
     }
   };
-
+ if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 p-6">

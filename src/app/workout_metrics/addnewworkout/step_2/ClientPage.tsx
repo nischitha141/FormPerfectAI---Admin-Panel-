@@ -14,7 +14,7 @@ const AddNewWorkoutStep2Page = () => {
   const [activeTab, setActiveTab] = useState<'workout' | 'exercise'>('workout');
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const { form: workoutForm, setForm } = useWorkoutStore();
+  const { form: workoutForm, setForm , resetForm} = useWorkoutStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errorToast, setErrorToast] = useState<string | null>(null);
 
@@ -145,7 +145,9 @@ const AddNewWorkoutStep2Page = () => {
       if (!res.ok || data.success === false) {
         setErrorToast(data.message || "Something went wrong");
         setTimeout(() => setErrorToast(null), 3000);
+        
       } else {
+        resetForm();
         setShowModal(true);
       }
 
@@ -299,7 +301,7 @@ const AddNewWorkoutStep2Page = () => {
               <div className="w-10 h-10 bg-green-100 text-green-600 flex items-center justify-center rounded-full">
 
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6.5 11L9.5 14L15.5 8M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#079455" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M6.5 11L9.5 14L15.5 8M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11C1 5.47715 5.47715 1 11 1C16.5228 1 21 5.47715 21 11Z" stroke="#079455" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
 
               </div>
